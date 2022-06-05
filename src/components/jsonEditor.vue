@@ -1,9 +1,10 @@
 <script>
 import { JSONEditor } from 'svelte-jsoneditor/dist/jsoneditor.js';
+import { mapGetters } from 'vuex';
 
 export default {
-    name: 'vueJsonEditor',
-    emits:["update:modelValue"],
+    name: 'JsonEditorVue',
+    emits: ["update:modelValue"],
     data() {
         return {
             editor: null,
@@ -23,6 +24,11 @@ export default {
             deep: true
         }
     },
+    computed: {
+        ...mapGetters({
+            content: 'getContent',
+        }),
+    },
     methods: {
         initView: function () {
             let container = this.$refs.jsoneditor;
@@ -30,8 +36,12 @@ export default {
                 target: container,
                 props: {
                     onChange: (content) => {
-                        console.log('onChange', this.editor.get());
-                        this.$emit('update:modelValue', content);
+                        // TODO : Verify if a new key is added and revert change.
+                        let contentjsonResult = this.editor.get().text ? 
+                            {
+                                json: JSON.parse(this.editor.get().text)
+                            } : this.editor.get();
+                        this.$store.commit('updateContent', contentjsonResult);
                     },
                     onRenderMenu: (mode, items) => {
                         let newItem = {
@@ -64,7 +74,8 @@ export default {
 
 <template>
     <div class="border border-primary rounded">
-        <div ref="jsoneditor" :class=" editorClass.isFullScreen ? 'fullscreen' : 'notfullscreen'" class="h-100 jsoneditor">
+        <div ref="jsoneditor" :class="editorClass.isFullScreen ? 'fullscreen' : 'notfullscreen'"
+            class="h-100 jsoneditor">
         </div>
     </div>
 </template>
