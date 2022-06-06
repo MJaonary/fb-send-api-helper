@@ -1,5 +1,5 @@
 <script>
-import buttonVue from './button.vue';
+import buttonVue from './buttonDepth1.vue';
 import quickReplyVue from './quickReply.vue';
 
 import { mapGetters } from 'vuex';
@@ -89,12 +89,10 @@ export default {
 </script>
 
 <template>
-    <div class="d-flex flex-column border border-primary rounded col-12">
+    <div class="d-flex flex-column border border-primary rounded col-12 px-1">
         <div class="bubble" :class="{ 'with-buttons': (buttons?.length) }" contenteditable @input="updateMessage">
             {{ message.data?.message?.text }}
         </div>
-        <!-- <button-vue v-for="item in buttons" :id="item" @onRequestDeleteButton="RequestDeleteButton"
-            @buttonInput="buttonInput"></button-vue> -->
         <button-vue v-for="button in buttons" :id="button.id" :mid="id">
         </button-vue>
         <div class="btn border m-0 p-0 bg-primary text-white" @click="addButton" :hidden="!hideButtonAdder">
@@ -108,7 +106,8 @@ export default {
                 <div>Add Button</div>
             </div>
         </div>
-        <div class="container-fluid">
+    </div>
+    <div class="container-fluid">
             <div class="d-flex flex-column align-items-center">
                 <quick-reply-vue v-for="quick_reply in quick_replies" :id="quick_reply.id" :mid="id"></quick-reply-vue>
             </div>
@@ -116,7 +115,7 @@ export default {
         <div class="btn border m-0 p-0 bg-primary text-white container-fluid" @click="addQuickReply"
             :hidden="!hideQuickReplyAdder">
             <div
-                class="d-flex align-items-center justify-content-center btn border bg-primary text-white">
+                class="d-flex align-items-center justify-content-center btn border bg-primary text-white ">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                     class="bi bi-plus-circle m-1" viewBox="0 0 16 16">
                     <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
@@ -126,7 +125,6 @@ export default {
                 <div>Quick Reply</div>
             </div>
         </div>
-    </div>
 </template>
 
 <style>
@@ -154,5 +152,40 @@ export default {
 .btn:active {
     background-color: #004cd0c5 !important;
     color: white !important;
+}
+
+.quick-reply-container:focus {
+    outline: none;
+}
+
+.quick-replies {
+    text-align: center;
+    padding-bottom: 10px;
+    white-space: nowrap;
+    line-height: 2em;
+    overflow-x: auto;
+}
+
+.quick-replies .button {
+    background: #fdfdfd;
+    color: #0084ff;
+    padding: 5px 10px;
+    cursor: pointer;
+    display: inline;
+    border: 1px solid #afafaf;
+    border-radius: 1em;
+    margin: 5px;
+}
+
+.quick-reply-button,
+.quick-reply-input {
+    background: #fff;
+    border-radius: 1em;
+    color: #0084ff;
+    display: inline-block;
+    border: 1px solid #0084ff;
+    margin: 5px;
+    padding: 5px 10px;
+    cursor: pointer;
 }
 </style>

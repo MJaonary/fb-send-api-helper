@@ -4,6 +4,7 @@ import messageTextVue from './components/messageText.vue';
 import { mapGetters } from 'vuex';
 import { generateUiid } from './components/utils/generateuuids';
 
+import genericTemplatesVue from './components/genericTemplates.vue'
 
 import _ from "lodash";
 </script>
@@ -17,7 +18,7 @@ export default {
     },
     components: {
         messageTextVue,
-        
+        genericTemplatesVue
     },
     computed: {
         ...mapGetters({
@@ -90,9 +91,8 @@ export default {
         },
         addTextMessageTemplate: function () {
             console.log('send_text_message');
-            let uuid = generateUiid();
             let data = {
-                id: uuid,
+                id: generateUiid(),
                 name: 'message-text-vue',
                 data: {
                     messaging_type: "RESPONSE",
@@ -103,6 +103,39 @@ export default {
                         text: "Entre Un Message.",
                         quick_replies: [],
                         buttons: []
+                    }
+                }
+            };
+            this.$store.commit('pushJson', data);
+        },
+        addGenericTemplate: function () {
+            console.log('send_generic_template');
+            let data = {
+                id: generateUiid(),
+                name: 'generic-templates-vue',
+                data: {
+                    messaging_type: "RESPONSE",
+                    recipient: {
+                        id: "{{User.id}}",
+                    },
+                    message: {
+                        quick_replies: [],
+                        attachment: {
+                            type: "template",
+                            payload: {
+                                template_type: "generic",
+                                elements: [
+                                    {   
+                                        id: generateUiid(),
+                                        title: "Title",
+                                        image_url: "https://mdbcdn.b-cdn.net/img/new/slides/043.webp",
+                                        subtitle: "Subtitle",
+                                        default_action: null,
+                                        buttons: []
+                                    }
+                                ],
+                            },
+                        }
                     }
                 }
             };
@@ -128,49 +161,41 @@ export default {
                     <div class="col-12 m-1"></div>
                     <div class="d-flex flex-column border justify-content-center align-items-center">
                         <div class="col-10 p-1 rounded bg-secondary text-white text-center border mt-1 items"
-                            data-role="send_text" @click="addTextMessageTemplate">
+                            @click="addTextMessageTemplate">
                             Text + Button
                         </div>
-                        <div class="col-10 p-1 rounded bg-secondary text-white text-center border items"
-                            data-role="send_file_from_id">
+                        <div class="col-10 p-1 rounded bg-secondary text-white text-center border items">
                             File
                         </div>
-                        <div class="col-10 p-1 rounded bg-secondary text-white text-center border items"
-                            data-role="send_image_media_url" @click="addTextMessageTemplate">
+                        <div class="col-10 p-1 rounded bg-secondary text-white text-center border items">
                             Image URL <br> Media Template
                         </div>
-                        <div class="col-10 p-1 rounded bg-secondary text-white text-center border items"
-                            data-role="send_image_from_id">
+                        <div class="col-10 p-1 rounded bg-secondary text-white text-center border items">
                             Image ID
                         </div>
-                        <div class="col-10 p-1 rounded bg-secondary text-white text-center border items"
-                            data-role="send_image_media_url">
+                        <div class="col-10 p-1 rounded bg-secondary text-white text-center border items">
                             Video URL <br> Media Template
                         </div>
-                        <div class="col-10 p-1 rounded bg-secondary text-white text-center border items"
-                            data-role="send_image_from_id">
+                        <div class="col-10 p-1 rounded bg-secondary text-white text-center border items">
                             Video ID
                         </div>
-                        <div class="col-10 p-1 rounded bg-secondary text-white text-center border items"
-                            data-role="send_audio_">
+                        <div class="col-10 p-1 rounded bg-secondary text-white text-center border items">
                             Audio
                         </div>
-                        <div class="col-10 p-1 rounded bg-secondary text-white text-center border items"
-                            data-role="send_delay_from_id">
+                        <div class="col-10 p-1 rounded bg-secondary text-white text-center border items">
                             Delay
                         </div>
                         <div class="col-10 p-1 rounded bg-secondary text-white text-center border items"
-                            data-role="send_carousell">
+                            @click="addGenericTemplate">
                             Card Generic Template
                         </div>
-                        <div class="col-10 mb-1 rounded bg-secondary text-white text-center border items"
-                            data-role="send_ref_message_id">
+                        <div class="col-10 mb-1 rounded bg-secondary text-white text-center border items">
                             Message From ID
                         </div>
                         <div class="col-12 m-2"></div>
                     </div>
                     <div class="row text-center justify-content-center">
-                        <div class="col-5 m-1 rounded bg-secondary text-white items" @click="exportAll">Copy</div>
+                        <div class="col-5 m-1 rounded bg-secondary text-white items" @click="exportAll">Export</div>
                         <div class="col-5 m-1 rounded bg-secondary text-white items" @click="clearAll">Clear</div>
                     </div>
                 </div>
@@ -183,7 +208,7 @@ export default {
                         <!-- Looping Rendering here -- Begin -->
                         <div v-for="items in content.json" class="col-12">
                             <div class="d-flex flex-column justify-content-center">
-                                <component :is="items.name" :id="items.id" class="border p-1"></component>
+                                <component :is="items.name" :id="items.id"></component>
                                 <div class="btn border border-danger text-danger p-0 m-1"
                                     @click="deleteComponentId(items.id)">Delete Template</div>
                             </div>

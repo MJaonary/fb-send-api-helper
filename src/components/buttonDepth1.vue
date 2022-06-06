@@ -39,29 +39,32 @@ export default {
         onFormChange: function (e) {
             console.log(e.target.id);
             let content = this.content;
+            let buttons = content.json.find(item => item.id == this.mid)
+                                .data.message.buttons.find(item => item.id == this.id);
+                                
             let value = e.target.value;
             switch (e.target.id) {
                 case this.id + 'button-form-select':
-                    content.json.find(item => item.id == this.mid).data.message.buttons.find(item => item.id == this.id).type = value;
+                    buttons.type = value;
                     break;
                 case this.id + 'button-form-url-title':
                 case this.id + 'button-form-postback-title':
-                    content.json.find(item => item.id == this.mid).data.message.buttons.find(item => item.id == this.id).title = value;
+                    buttons.title = value;
                     break;
                 case this.id + 'button-form-postback-payload':
-                    content.json.find(item => item.id == this.mid).data.message.buttons.find(item => item.id == this.id).payload = value;
+                    buttons.payload = value;
                     break;
                 case this.id + 'button-form-webview-url':
-                    content.json.find(item => item.id == this.mid).data.message.buttons.find(item => item.id == this.id).url = value;
+                    buttons.url = value;
                     break;
                 case this.id + 'button-form-webview-height':
-                    content.json.find(item => item.id == this.mid).data.message.buttons.find(item => item.id == this.id).webview_height_ratio = value;
+                    buttons.webview_height_ratio = value;
                     break;
                 case this.id + 'button-form-webview-messenger-extension':
-                    content.json.find(item => item.id == this.mid).data.message.buttons.find(item => item.id == this.id).messenger_extensions = value;
+                    buttons.messenger_extensions = value;
                     break;
                 case this.id + 'button-form-webview-fallback-url':
-                    content.json.find(item => item.id == this.mid).data.message.buttons.find(item => item.id == this.id).fallback_url = value;
+                    buttons.fallback_url = value;
                     break;
                 default:
                     break;
@@ -96,7 +99,7 @@ export default {
                 </select>
             </div>
 
-            <div :hidden="!(selectedMode == 'postback' || 'phone_number')">
+            <div :hidden="!(selectedMode == 'postback' || selectedMode == 'phone_number')">
                 <div class="d-flex form-group m-1">
                     <label :for="id + 'button-form-postback-type'" class="col-3 col-form-label">Type :</label>
                     <div class="col-9">
