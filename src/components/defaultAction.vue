@@ -7,8 +7,6 @@ export default {
     data() {
         return {
             formEdit: true,
-            selectedMode: 'postback', // Default Mode Postback
-            title: 'Button',
             payload: 'Default',
         }
     },
@@ -25,47 +23,33 @@ export default {
         element() {
             return this.elements.find(item => item.id == this.eid);
         },
-        buttons() {
-            return this.element.buttons;
-        },
-        button() {
-            return this.buttons.find(item => item.id == this.id);
-        },
+        default_action() {
+            return this.element.default_action;
+        }
     },
     methods: {
         toogleButtonForm: function () {
             this.formEdit = !this.formEdit;
         },
-        deleteButton: function () {
+        deleteDefaultAction: function () {
             let content = this.content;
-            let newButtons = _.reject(this.buttons, e => { return e.id == this.id });
 
             content.json.find(item => item.id == this.mid)
                 .data.message.attachment.payload.elements
-                .find(item => item.id == this.eid)
-                .buttons = newButtons;
-
-            this.$store.commit('updateContent', content);
+                .find(item => item.id == this.eid).default_action = null;
+                
         },
         onFormChange: function (e) {
-            console.log(e.target.id); // Store Writable?
             let buttons = this.content.json.find(item => item.id == this.mid)
-                        .data.message.attachment.payload.elements
-                        .find(item => item.id == this.eid)
-                        .buttons.find(item => item.id == this.id);
+                .data.message.attachment.payload.elements
+                .find(item => item.id == this.eid)
+                .default_action;
 
             let value = e.target.value;
 
             switch (e.target.id) {
                 case this.id + 'button-form-select':
                     buttons.type = value;
-                    break;
-                case this.id + 'button-form-url-title':
-                case this.id + 'button-form-postback-title':
-                    buttons.title = value;
-                    break;
-                case this.id + 'button-form-postback-payload':
-                    buttons.payload = value;
                     break;
                 case this.id + 'button-form-webview-url':
                     buttons.url = value;
@@ -91,9 +75,9 @@ export default {
 <template>
     <div class="d-flex flex-column align-items-center border rounded col-12">
         <div class="d-flex col-12">
-            <div class="btn border mb-1 col-10" @click="toogleButtonForm">{{ button.title }}</div>
+            <div class="btn border mb-1 col-10" @click="toogleButtonForm">Default Action</div>
             <div class="d-flex align-items-center justify-content-center btn border col-2 mb-1 text-white bg-danger"
-                @click="deleteButton">
+                @click="deleteDefaultAction">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                     class="bi bi-backspace-fill" viewBox="0 0 16 16">
                     <path
@@ -103,61 +87,21 @@ export default {
         </div>
 
         <form class="border mb-1 col-12 rounded" :hidden="formEdit" @input="onFormChange">
-            <div class="col-auto m-1">
-                <label class="mr-2" :for="id + 'button-form-select'">Preferences :</label>
-                <select class="form-select mr-2" :id="id + 'button-form-select'" v-model="selectedMode">
-                    <option value="postback" selected>Postback</option>
-                    <option value="web_url">Web url</option>
-                    <option value="phone_number">Phone Number</option>
-                </select>
-            </div>
-
-            <div :hidden="!(selectedMode == 'postback' || selectedMode == 'phone_number')">
-                <div class="d-flex form-group m-1">
-                    <label :for="id + 'button-form-postback-type'" class="col-3 col-form-label">Type :</label>
-                    <div class="col-9">
-                        <input type="text" class="form-control" :id="id + 'button-form-postback-type'"
-                            :value="selectedMode" disabled>
-                    </div>
-                </div>
-                <div class="d-flex form-group m-1">
-                    <label :for="id + 'button-form-postback-title'" class="col-3 col-form-label">Title :</label>
-                    <div class="col-9">
-                        <input type="text" class="form-control" :id="id + 'button-form-postback-title'"
-                            :value="button.title">
-                    </div>
-                </div>
-                <div class="d-flex form-group m-1">
-                    <label :for="id + 'button-form-postback-payload'" class="col-3 col-form-label">payload : </label>
-                    <div class="col-9">
-                        <input type="text" class="form-control" :id="id + 'button-form-postback-payload'"
-                            :value="button.payload">
-                    </div>
-                </div>
-            </div>
-
-            <div class="m-1" :hidden="!(selectedMode == 'web_url')">
+            <div class="m-1">
                 <div class="d-flex form-group m-1">
                     <label :for="id + 'button-form-url-type'" class="col-2 col-form-label">Type :</label>
                     <div class="col-10">
-                        <input type="text" class="form-control" :id="id + 'button-form-url-type'" :value="selectedMode"
+                        <input type="text" class="form-control" :id="id + 'button-form-url-type'" value="web_url"
                             disabled>
                     </div>
                 </div>
                 <div class="d-flex form-group m-1">
                     <label :for="id + 'button-form-webview-url'" class="col-2 col-form-label">Url :</label>
                     <div class="col-10">
-                        <input type="text" class="form-control" :id="id + 'button-form-webview-url'"
-                            :value="button.url">
+                        <input type="text" class="form-control" :id="id + 'button-form-webview-url'" :value="default_action.url">
                     </div>
                 </div>
-                <div class="d-flex form-group m-1">
-                    <label :for="id + 'button-form-url-title'" class="col-2 col-form-label">Title :</label>
-                    <div class="col-10">
-                        <input type="text" class="form-control" :id="id + 'button-form-url-title'"
-                            placeholder="View Website" :value="button.title">
-                    </div>
-                </div>
+
                 <div class="col-auto m-1">
                     <label class="mr-2" :for="id + 'button-form-webview-height'">webview_height_ratio</label>
                     <select class="form-select mr-2" :id="id + 'button-form-webview-height'">

@@ -1,21 +1,23 @@
 <template>
-    <div class="carousel slide" data-bs-interval="false" style="width: 100%;">
+    <div id="carouselExampleInterval" class="carousel slide" data-bs-interval="false" style="width: 100%;">
         <div class="carousel-inner">
-            <template-vue v-for="(element, index) in elements" :class="{ 'active': (index == active) }" :id="element.id"
-                :mid="id" :index="index" @onDeleteElement="previousElement">
+            <!-- :class="{'active':(index==(elements.length-1))}" -->
+            <template-vue v-for="(element, index) in elements" :id="element.id" :mid="id" :index="index" :class="{'active':(index==(elements.length-1))}">
             </template-vue>
 
-            <a class="carousel-control-prev" type="button" data-bs-slide="prev">
-                <span class="carousel-control-prev-icon" aria-hidden="true" @click="previousElement"></span>
+            <a class="carousel-control-prev" type="button" data-bs-target="#carouselExampleInterval"
+                data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
                 <span class="visually-hidden">Previous</span>
             </a>
-            <a class="carousel-control-next" type="button" data-bs-slide="next">
-                <span class="carousel-control-next-icon" aria-hidden="true" @click="nextElement"></span>
+            <a class="carousel-control-next" type="button" data-bs-target="#carouselExampleInterval"
+                data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
                 <span class="visually-hidden">Next</span>
             </a>
         </div>
 
-        <div class="btn border mt-1 p-0 bg-primary text-white col-12" @click="addElement" :hidden="elements.length > 9">
+        <div class="btn border mt-1 p-0 bg-primary text-white col-12" @click="addElement" :hidden="elements.length>9">
             <div class="d-flex align-items-center justify-content-center btn border bg-primary text-white">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                     class="bi bi-plus-circle m-1" viewBox="0 0 16 16">
@@ -32,7 +34,7 @@
                 <quick-reply-vue v-for="quick_reply in quick_replies" :id="quick_reply.id" :mid="id"></quick-reply-vue>
             </div>
             <div class="btn border m-0 p-0 bg-primary text-white container-fluid" @click="addQuickReply"
-                :hidden="quick_replies.length > 12">
+                :hidden="quick_replies.length>12">
                 <div class="d-flex align-items-center justify-content-center btn border bg-primary text-white">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                         class="bi bi-plus-circle m-1" viewBox="0 0 16 16">
@@ -65,7 +67,6 @@ export default {
             hideButtonAdder: true,
             hideQuickReplyAdder: true,
             hideElementAdder: true,
-            active: 0
         }
     },
     computed: {
@@ -107,28 +108,6 @@ export default {
                 image_url: '',
             };
             this.quick_replies.push(quick_reply);
-        },
-        nextElement: function () {
-            console.log(this.elements.length);
-            if (this.elements.length == 1) {
-                this.active = 0;
-            } else {
-                this.active++;
-                this.active %= this.elements.length;
-            }
-            console.log(this.active);
-        },
-        previousElement: function () {
-            console.log(this.elements.length);
-            if (this.elements.length == 1) {
-                this.active = 0;
-            } else if ( this.active == 0 ) {
-                this.active = (this.elements.length - 1)
-            }
-            else {
-                this.active--;
-            }
-            console.log(this.active);
         }
     }
 }

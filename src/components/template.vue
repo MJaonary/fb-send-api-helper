@@ -1,17 +1,19 @@
 <template>
     <div class="carousel-item border border-primary px-1 rounded" :class="class">
-        <div class="d-flex flex-column border rounded">
-            <div class="image-container border" style="position: relative;">
-                <img src="https://mdbcdn.b-cdn.net/img/new/slides/043.webp" class="d-block w-100" alt="Exotic Fruits" />
+        <div class="d-flex flex-column border rounded" @input="elementInput">
+            <div class="image-container border" style="position: relative">
+                <img :src="element.image_url || 'https://mdbcdn.b-cdn.net/img/new/slides/043.webp'" class="d-block w-100" alt="Exotic Fruits" style="width: 100%;height:9rem;object-fit: contain;"/>
                 <h2>
                     {{ index }}
                 </h2>
-                <input type="text" class="text-center centered templates-input" placeholder="Paste Url Here">
-                <input type="text" class="text-center col-12" placeholder="Title">
-                <input type="text" class="text-center mt-1 col-12" placeholder="Subtitle">
+                <input :id="id + '-input-image_url'" type="text" class="text-center centered templates-input"
+                    placeholder="Paste Url Here">
+                <input :id="id + '-input-title'" type="text" class="text-center col-12" placeholder="Title">
+                <input :id="id + '-input-subtitle'" type="text" class="text-center mt-1 col-12" placeholder="Subtitle" >
             </div>
 
-            <div class="btn border m-0 p-0 bg-primary text-white" @click="">
+            <default-action-vue v-if="default_action" :id="123456789" :mid="mid" :eid="id"></default-action-vue>
+            <div class="btn border m-0 p-0 bg-primary text-white" @click="addDefaultAction" :hidden="default_action">
                 <div class="d-flex align-items-center justify-content-center btn border bg-primary text-white">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                         class="bi bi-plus-circle m-1" viewBox="0 0 16 16">
@@ -57,16 +59,17 @@
 
 <script>
 import buttonVue from './buttonDepth2.vue';
+import defaultActionVue from './defaultAction.vue';
 import quickReplyVue from './quickReply.vue';
 
 import { mapGetters } from 'vuex';
 import { generateUiid } from './utils/generateuuids';
 
 export default {
-    emits: ['onDeleteElement'],
     components: {
         buttonVue,
-        quickReplyVue
+        quickReplyVue,
+        defaultActionVue
     },
     props: ['id', 'mid', 'index', 'class'],
     data() {
@@ -88,12 +91,27 @@ export default {
         },
         buttons() {
             return this.element.buttons;
+        },
+        default_action() {
+            return this.element.default_action;
         }
     },
     methods: {
-        updateMessage: function (e) {
-            let content = this.content;
-            content.json.find(item => item.id == this.id).data.message.text = e.target.innerText;
+        elementInput: function (e) {
+            console.log(e.target.id);
+            switch (e.target.id) {
+                case this.id+'-input-image_url':
+                    this.element.image_url = e.target.value;
+                    break;
+                case this.id+'-input-title':
+                    this.element.title = e.target.value;
+                    break;
+                case this.id+'-input-subtitle':
+                    this.element.subtitle = e.target.value;
+                    break;
+                default:
+                    break;
+            }
         },
         addButton: function () {
             let button = {
@@ -111,7 +129,6 @@ export default {
             // So we can 'push' and 'pop' an array, but we cant edit it.
         },
         deleteElement: function (id) {
-            this.$emit('onDeleteElement');
             console.log('deleteElement');
             let content = this.content;
 
@@ -125,6 +142,17 @@ export default {
                 .data.message.attachment.payload.elements = elements;
 
             this.$store.commit('updateContent', content);
+        },
+        addDefaultAction: function () {
+            let default_action = {
+                type: 'web_url',
+                url: 'https://example.com',
+                webview_height_ratio: 'compact',
+                messenger_extensions: 'true',
+                fallback_url: '',
+            }
+
+            this.element.default_action = default_action;
         }
     }
 }

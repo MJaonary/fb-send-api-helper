@@ -72,9 +72,48 @@ export default {
                     }
                         break;
 
+                    case 'generic-templates-vue': {
+                        if (element.data.message.quick_replies.length == 0) {
+                            delete element.data.message.quick_replies;
+                        } else {
+                            element.data.message.quick_replies.forEach(element => {
+                                delete element.id;
+                            });
+                        }
+
+                        element.data.message.attachment.payload.elements.forEach(elemen => {
+                            if (elemen.default_action == null) {
+                                delete elemen.default_action;
+                            }
+                        })
+
+                        element.data.message.attachment.payload.elements.forEach(element => {
+                            delete element.id;
+                            if (element.buttons.length == 0) {
+                                delete element.buttons;
+                            } else {
+                                element.buttons.forEach(element => {
+                                    delete element.id
+                                    if (element.type == 'postback' || 'phone_number') {
+                                        delete element.url;
+                                        delete element.webview_height_ratio;
+                                        delete element.messenger_extensions;
+                                        delete element.fallback_url;
+                                    } else {
+                                        delete element.payload;
+                                    }
+                                })
+                            }
+                        });
+                        
+                        result.push(element.data);
+                    }
+                        break;
+
                     default:
                         break;
                 }
+
             });
             this.copyToClipboard(JSON.stringify(result));
         },
@@ -125,7 +164,7 @@ export default {
                             payload: {
                                 template_type: "generic",
                                 elements: [
-                                    {   
+                                    {
                                         id: generateUiid(),
                                         title: "Title",
                                         image_url: "https://mdbcdn.b-cdn.net/img/new/slides/043.webp",
