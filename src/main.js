@@ -6,22 +6,38 @@ import App from './App.vue'
 import "bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
 
-// 🤺
-
 const store = createStore({
     state() {
         return {
             content: {
                 json: [],
             },
+            history: [],
+            page_access_token: '',
+            file_type: 'file',
         }
     },
     getters: {
         getContent(state) {
             return state.content;
+        },
+        getHistory(state) {
+            return state.history;
+        },
+        getLatestPageAccessToken(state) {
+            return state.page_access_token;
+        },
+        getLatestFileType(state) {
+            return state.file_type;
         }
     },
     mutations: {
+        updatePageAccessToken(state, newContent) {
+            state.page_access_token = newContent;
+        },
+        updateFileType(state, newContent) {
+            state.file_type = newContent;
+        },
         updateContent(state, newContent) {
             state.content = newContent;
         },

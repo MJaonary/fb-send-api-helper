@@ -3,13 +3,11 @@ import { mapGetters } from 'vuex';
 import _ from 'lodash';
 
 export default {
-    props: ['id', 'mid', 'eid'],
+    props: ['id', 'eid', 'mid'],
     data() {
         return {
             formEdit: true,
-            selectedMode: 'postback', // Default Mode Postback
-            title: 'Button',
-            payload: 'Default',
+            selectedMode: 'postback',
         }
     },
     computed: {
@@ -37,22 +35,21 @@ export default {
             this.formEdit = !this.formEdit;
         },
         deleteButton: function () {
-            let content = this.content;
+            // let content = this.content;
             let newButtons = _.reject(this.buttons, e => { return e.id == this.id });
 
-            content.json.find(item => item.id == this.mid)
+            this.content.json.find(item => item.id == this.mid)
                 .data.message.attachment.payload.elements
                 .find(item => item.id == this.eid)
                 .buttons = newButtons;
-
-            this.$store.commit('updateContent', content);
+            // this.$store.commit('updateContent', content);
         },
         onFormChange: function (e) {
-            console.log(e.target.id); // Store Writable?
+            // console.log(e.target.id); // Store Writable?
             let buttons = this.content.json.find(item => item.id == this.mid)
-                        .data.message.attachment.payload.elements
-                        .find(item => item.id == this.eid)
-                        .buttons.find(item => item.id == this.id);
+                .data.message.attachment.payload.elements
+                .find(item => item.id == this.eid)
+                .buttons.find(item => item.id == this.id);
 
             let value = e.target.value;
 

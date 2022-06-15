@@ -3,7 +3,7 @@ import { JSONEditor } from 'svelte-jsoneditor/dist/jsoneditor.js';
 import { mapGetters } from 'vuex';
 
 export default {
-    name: 'JsonEditorVue',
+    name: 'JsonEditorSimpleVue',
     emits: ["update:modelValue"],
     data() {
         return {
@@ -33,16 +33,21 @@ export default {
             this.editor = new JSONEditor({
                 target: container,
                 props: {
-                    onChange: (content) => {
-                        // TODO : Verify if a new key is added and revert change.
-                        let contentjsonResult = this.editor.get().text ? 
-                            {
-                                json: JSON.parse(this.editor.get().text)
-                            } : this.editor.get();
-                        this.$store.commit('updateContent', contentjsonResult);
-                    },
+                    mode : 'code',
                     onRenderMenu: (mode, items) => {
                         let newItem = {
+                            title: 'Copy Everything',
+                            icon: {
+                                prefix: 'fas',
+                                iconName: 'copy',
+                                icon: [16, 16, [], null, `M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1h1a1 1 0 0 1 1 1V14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1h1v-1z M9.5 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5h3zm-3-1A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3z`]
+                            },
+                            onClick: () => {
+                                this.copyToClipboard(JSON.stringify(this.editor.get().json));
+                            }
+                        };
+                        items.push(newItem);
+                        newItem = {
                             title: 'Toogle Full Screen Mode',
                             icon: {
                                 prefix: 'fas',
@@ -62,7 +67,15 @@ export default {
         },
         toogleEditorFullScreen: function () {
             this.editorFullScreen = !this.editorFullScreen;
-        }
+        },
+        copyToClipboard: async function (mytext) {
+            try {
+                await navigator.clipboard.writeText(mytext);
+                alert('Copied');
+            } catch (e) {
+                alert(`Cannot copy ${e}`);
+            }
+        },
     },
     mounted() {
         this.initView();

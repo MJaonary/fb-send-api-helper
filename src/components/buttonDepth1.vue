@@ -19,8 +19,14 @@ export default {
         message() {
             return this.content.json.find(item => item.id == this.mid);
         },
+        simpleButton() {
+            return this.message.data.message.attachment.payload.buttons;
+        },
+        mediaTemplateButton() {
+            return this.message.data.message.attachment.payload.elements[0].buttons;
+        },
         buttons() {
-            return this.message.data.message.buttons;
+            return this.simpleButton ? this.simpleButton : this.mediaTemplateButton;
         },
         button() {
             return this.buttons.find(item => item.id == this.id);
@@ -31,45 +37,48 @@ export default {
             this.formEdit = !this.formEdit;
         },
         deleteButton: function () {
-            let content = this.content;
+            // let content = this.content;
             let buttons = _.reject(this.buttons, e => { return e.id == this.id });
-            content.json.find(item => item.id == this.mid).data.message.buttons = buttons;
-            this.$store.commit('updateContent', content);
+            if ( this.simpleButton ) {
+                this.content.json.find(item => item.id == this.mid).data.message.attachment.payload.buttons = buttons;
+            } else {
+                this.content.json.find(item => item.id == this.mid).data.message.attachment.payload.elements[0].buttons = buttons;
+            }
+            // this.$store.commit('updateContent', content);
+
         },
         onFormChange: function (e) {
-            console.log(e.target.id);
-            let content = this.content;
-            let buttons = content.json.find(item => item.id == this.mid)
-                                .data.message.buttons.find(item => item.id == this.id);
+            // console.log(e.target.id);
+            // let content = this.content;
                                 
             let value = e.target.value;
             switch (e.target.id) {
                 case this.id + 'button-form-select':
-                    buttons.type = value;
+                    this.button.type = value;
                     break;
                 case this.id + 'button-form-url-title':
                 case this.id + 'button-form-postback-title':
-                    buttons.title = value;
+                    this.button.title = value;
                     break;
                 case this.id + 'button-form-postback-payload':
-                    buttons.payload = value;
+                    this.button.payload = value;
                     break;
                 case this.id + 'button-form-webview-url':
-                    buttons.url = value;
+                    this.button.url = value;
                     break;
                 case this.id + 'button-form-webview-height':
-                    buttons.webview_height_ratio = value;
+                    this.button.webview_height_ratio = value;
                     break;
                 case this.id + 'button-form-webview-messenger-extension':
-                    buttons.messenger_extensions = value;
+                    this.button.messenger_extensions = value;
                     break;
                 case this.id + 'button-form-webview-fallback-url':
-                    buttons.fallback_url = value;
+                    this.button.fallback_url = value;
                     break;
                 default:
                     break;
             }
-            this.$store.commit('updateContent', content);
+            // this.$store.commit('updateContent', content);
         }
     }
 }
@@ -89,7 +98,7 @@ export default {
             </div>
         </div>
 
-        <form class="border mb-1 col-12 rounded" :hidden="formEdit" @input="onFormChange">
+        <form class="border mb-1 col-12 rounded" v-if="formEdit" @input="onFormChange">
             <div class="col-auto m-1">
                 <label class="mr-2" :for="id + 'button-form-select'">Preferences :</label>
                 <select class="form-select mr-2" :id="id + 'button-form-select'" v-model="selectedMode">

@@ -1,15 +1,119 @@
+<script>
+import buttonVue from './buttonDepth2.vue';
+import defaultActionVue from './defaultAction.vue';
+import quickReplyVue from './quickReply.vue';
+
+import { mapGetters } from 'vuex';
+import { generateUiid } from './utils/generateuuids';
+
+export default {
+    components: {
+        buttonVue,
+        quickReplyVue,
+        defaultActionVue
+    },
+    props: ['id', 'mid', 'index', 'class'],
+    emits: ['onDeleteElement'],
+    data() {
+        return {
+        }
+    },
+    computed: {
+        ...mapGetters({
+            content: 'getContent',
+        }),
+        message() {
+            return this.content.json.find(item => item.id == this.mid);
+        },
+        elements() {
+            return this.message?.data.message.attachment.payload.elements;
+        },
+        element() {
+            return this.elements.find(item => item.id == this.id);
+        },
+        buttons() {
+            return this.element.buttons;
+        },
+        default_action() {
+            return this.element.default_action;
+        }
+    },
+    methods: {
+        elementInput: function (e) {
+            // console.log(e.target.id);
+            let element = this.element;
+            switch (e.target.id) {
+                case this.id + '-input-image_url':
+                    element.image_url = e.target.value;
+                    break;
+                case this.id + '-input-title':
+                    element.title = e.target.value;
+                    break;
+                case this.id + '-input-subtitle':
+                    element.subtitle = e.target.value;
+                    break;
+                default:
+                    break;
+            }
+        },
+        addButton: function () {
+            let button = {
+                id: generateUiid(),
+                type: 'postback',
+                title: 'Button',
+                payload: 'Default_Payload',
+                url: 'https://example.com',
+                webview_height_ratio: 'compact',
+                messenger_extensions: 'true',
+                fallback_url: '',
+            };
+            this.buttons.push(button);
+            // this.$store.commit('updateContent', this.content); 
+            // So we can 'push' and 'pop' an array, but we cant edit it.
+        },
+        deleteElement: function (id) {
+            // console.log(this.index);
+            this.$emit('onDeleteElement', this.index);
+            // this.elements = this.elements.filter(item => { return item.id != id });
+            this.content.json.find(item => item.id == this.mid)
+                .data.message.attachment.payload.elements = this.elements.filter(item => { return item.id != id });
+            // this.$store.commit('updateContent', content);
+        },
+        addDefaultAction: function () {
+            let default_action = {
+                type: 'web_url',
+                url: 'https://example.com',
+                webview_height_ratio: 'compact',
+                messenger_extensions: 'true',
+                fallback_url: '',
+            }
+            this.element.default_action = default_action;
+        }
+    }
+}
+</script>
+
 <template>
     <div class="carousel-item border border-primary px-1 rounded" :class="class">
         <div class="d-flex flex-column border rounded" @input="elementInput">
-            <div class="image-container border" style="position: relative">
-                <img :src="element.image_url || 'https://mdbcdn.b-cdn.net/img/new/slides/043.webp'" class="d-block w-100" alt="Exotic Fruits" style="width: 100%;height:9rem;object-fit: contain;"/>
-                <h2>
-                    {{ index }}
-                </h2>
+            <div class="border" style="position: relative">
+                <img :src="element.image_url || 'https://mdbcdn.b-cdn.net/img/new/slides/043.webp'"
+                    class="d-block w-100" alt="Exotic Fruits" style="width: 100%;height:9rem;object-fit: contain;" />
+                <div class="index-container d-flex flex-column align-items-center">
+                    <h2>
+                        {{ index }}
+                    </h2>
+                    <h2
+                        style="left:0; background-color: red;color:white; border-radius: 50%; width: 1em; display: flex; justify-content: center;">
+                        {{ (elements.length - 1) }}
+                    </h2>
+                </div>
                 <input :id="id + '-input-image_url'" type="text" class="text-center centered templates-input"
-                    placeholder="Paste Url Here">
-                <input :id="id + '-input-title'" type="text" class="text-center col-12" placeholder="Title">
-                <input :id="id + '-input-subtitle'" type="text" class="text-center mt-1 col-12" placeholder="Subtitle" >
+                    placeholder="Paste Url Here" :value="element.image_url">
+                <input :id="id + '-input-title'" type="text" class="text-center col-12" placeholder="Title"
+                    :value="element.title">
+                <input :id="id + '-input-subtitle'" type="text" class="text-center mt-1 col-12" placeholder="Subtitle"
+                    :value="element.subtitle">
             </div>
 
             <default-action-vue v-if="default_action" :id="123456789" :mid="mid" :eid="id"></default-action-vue>
@@ -41,129 +145,19 @@
             <div class="d-flex justify-content-center">
                 <div class="btn border border-danger text-danger p-0 m-1 col-12" :hidden="elements.length == 1"
                     @click="deleteElement(id)">
-                    Delete Element
+                    Delete Element Number: {{ index }}
                 </div>
             </div>
         </div>
     </div>
-
-    <a class="carousel-control-prev" type="button" data-bs-target="#carouselExampleInterval" data-bs-slide="prev">
-        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-        <span class="visually-hidden">Previous</span>
-    </a>
-    <a class="carousel-control-next" type="button" data-bs-target="#carouselExampleInterval" data-bs-slide="next">
-        <span class="carousel-control-next-icon" aria-hidden="true"></span>
-        <span class="visually-hidden">Next</span>
-    </a>
 </template>
 
-<script>
-import buttonVue from './buttonDepth2.vue';
-import defaultActionVue from './defaultAction.vue';
-import quickReplyVue from './quickReply.vue';
-
-import { mapGetters } from 'vuex';
-import { generateUiid } from './utils/generateuuids';
-
-export default {
-    components: {
-        buttonVue,
-        quickReplyVue,
-        defaultActionVue
-    },
-    props: ['id', 'mid', 'index', 'class'],
-    data() {
-        return {
-        }
-    },
-    computed: {
-        ...mapGetters({
-            content: 'getContent',
-        }),
-        message() {
-            return this.content.json.find(item => item.id == this.mid);
-        },
-        elements() {
-            return this.message?.data.message.attachment.payload.elements;
-        },
-        element() {
-            return this.elements.find(item => item.id == this.id);
-        },
-        buttons() {
-            return this.element.buttons;
-        },
-        default_action() {
-            return this.element.default_action;
-        }
-    },
-    methods: {
-        elementInput: function (e) {
-            console.log(e.target.id);
-            switch (e.target.id) {
-                case this.id+'-input-image_url':
-                    this.element.image_url = e.target.value;
-                    break;
-                case this.id+'-input-title':
-                    this.element.title = e.target.value;
-                    break;
-                case this.id+'-input-subtitle':
-                    this.element.subtitle = e.target.value;
-                    break;
-                default:
-                    break;
-            }
-        },
-        addButton: function () {
-            let button = {
-                id: generateUiid(),
-                type: 'postback',
-                title: 'Button',
-                payload: 'Default_Payload',
-                url: 'https://example.com',
-                webview_height_ratio: 'compact',
-                messenger_extensions: 'true',
-                fallback_url: '',
-            };
-            this.buttons.push(button);
-            // this.$store.commit('updateContent', this.content); 
-            // So we can 'push' and 'pop' an array, but we cant edit it.
-        },
-        deleteElement: function (id) {
-            console.log('deleteElement');
-            let content = this.content;
-
-            let elements = content.json.find(item => item.id == this.mid)
-                .data.message.attachment.payload.elements.filter(item => {
-                    console.log(item.id);
-                    return item.id != id
-                })
-
-            content.json.find(item => item.id == this.mid)
-                .data.message.attachment.payload.elements = elements;
-
-            this.$store.commit('updateContent', content);
-        },
-        addDefaultAction: function () {
-            let default_action = {
-                type: 'web_url',
-                url: 'https://example.com',
-                webview_height_ratio: 'compact',
-                messenger_extensions: 'true',
-                fallback_url: '',
-            }
-
-            this.element.default_action = default_action;
-        }
-    }
-}
-</script>
-
 <style scoped>
-h2 {
+.index-container {
     opacity: 25%;
     position: absolute;
     right: 0;
-    top: 0;
+    top: 15%;
     border: 1px solid black;
     border-radius: 50%;
     width: 10%;
@@ -205,52 +199,5 @@ h2 {
     border: none;
     background: transparent;
     color: black;
-}
-
-.buttons {
-    cursor: pointer;
-    margin: 0px 1px 1px 1px;
-    border: 1px solid #e5e5e5;
-    text-align: center;
-    line-height: 2em;
-}
-
-.buttons:active {
-    background-color: #ccc;
-}
-
-.quick-reply-container:focus {
-    outline: none;
-}
-
-.quick-replies {
-    text-align: center;
-    padding-bottom: 10px;
-    white-space: nowrap;
-    line-height: 2em;
-    overflow-x: auto;
-}
-
-.quick-replies .button {
-    background: #fdfdfd;
-    color: #0084ff;
-    padding: 5px 10px;
-    cursor: pointer;
-    display: inline;
-    border: 1px solid #afafaf;
-    border-radius: 1em;
-    margin: 5px;
-}
-
-.quick-reply-button,
-.quick-reply-input {
-    background: #fff;
-    border-radius: 1em;
-    color: #0084ff;
-    display: inline-block;
-    border: 1px solid #0084ff;
-    margin: 5px;
-    padding: 5px 10px;
-    cursor: pointer;
 }
 </style>

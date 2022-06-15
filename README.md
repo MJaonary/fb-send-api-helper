@@ -27,3 +27,10 @@ npm run dev
 ```sh
 npm run build
 ```
+
+### TODO
+Attachment Uploader Helper
+History Management - Import/ Export
+Export to File
+JSON validator
+Import from valid JSON

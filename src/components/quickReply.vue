@@ -29,10 +29,10 @@ export default {
             this.formEdit = !this.formEdit;
         },
         deleteQuickReply: function () {
-            let content = this.content;
+            // let content = this.content;
             let quick_replies = _.reject(this.quick_replies, e => { return e.id == this.id });
-            content.json.find(item => item.id == this.mid).data.message.quick_replies = quick_replies;
-            this.$store.commit('updateContent', content);
+            this.content.json.find(item => item.id == this.mid).data.message.quick_replies = quick_replies;
+            // this.$store.commit('updateContent', content);
         },
         onFormChange: function (e) {
             console.log(e.target.id);
@@ -115,27 +115,7 @@ export default {
     font-size: small;
 }
 
-.quick-replies {
-    text-align: center;
-    padding-bottom: 10px;
-    white-space: nowrap;
-    line-height: 2em;
-    overflow-x: auto;
-}
-
-.quick-replies .button {
-    background: #fdfdfd;
-    color: #0084ff !important;
-    padding: 5px 10px;
-    cursor: pointer;
-    display: inline;
-    border: 1px solid #afafaf;
-    border-radius: 1em;
-    margin: 5px;
-}
-
-.quick-reply-button,
-.quick-reply-input {
+.quick-reply-button {
     background: #fff;
     border-radius: 1em;
     color: #0084ff !important;

@@ -1,13 +1,11 @@
 <script>
 import { mapGetters } from 'vuex';
-import _ from 'lodash';
 
 export default {
-    props: ['id', 'mid', 'eid'],
+    props: ['id', 'eid', 'mid'],
     data() {
         return {
             formEdit: true,
-            payload: 'Default',
         }
     },
     computed: {
@@ -32,12 +30,10 @@ export default {
             this.formEdit = !this.formEdit;
         },
         deleteDefaultAction: function () {
-            let content = this.content;
-
-            content.json.find(item => item.id == this.mid)
+            // let content = this.content;
+            this.content.json.find(item => item.id == this.mid)
                 .data.message.attachment.payload.elements
                 .find(item => item.id == this.eid).default_action = null;
-                
         },
         onFormChange: function (e) {
             let buttons = this.content.json.find(item => item.id == this.mid)
@@ -98,7 +94,8 @@ export default {
                 <div class="d-flex form-group m-1">
                     <label :for="id + 'button-form-webview-url'" class="col-2 col-form-label">Url :</label>
                     <div class="col-10">
-                        <input type="text" class="form-control" :id="id + 'button-form-webview-url'" :value="default_action.url">
+                        <input type="text" class="form-control" :id="id + 'button-form-webview-url'"
+                            :value="default_action.url">
                     </div>
                 </div>
 

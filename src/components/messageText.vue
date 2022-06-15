@@ -13,8 +13,6 @@ export default {
     props: ['id'],
     data() {
         return {
-            hideButtonAdder: true,
-            hideQuickReplyAdder: true,
         }
     },
     computed: {
@@ -25,43 +23,20 @@ export default {
             return this.content.json.find(item => item.id == this.id);
         },
         buttons() {
-            return this.message?.data.message?.buttons;
+            return this.message.data.message.attachment.payload.buttons;
         },
         quick_replies() {
             return this.message?.data.message?.quick_replies;
         }
     },
-    watch: {
-        buttons: {
-            handler(buttons) {
-                if (buttons?.length > 2) {
-                    this.hideButtonAdder = false;
-                } else {
-                    this.hideButtonAdder = true;
-                }
-            },
-            deep: true
-        },
-        quick_replies: {
-            handler(quick_replies) {
-                if (quick_replies?.length > 12) {
-                    this.hideQuickReplyAdder = false;
-                } else {
-                    this.hideQuickReplyAdder = true;
-                }
-            },
-            deep: true
-        },
-    },
     methods: {
         updateMessage: function(e) {
-          let content = this.content;
-          content.json.find(item => item.id == this.id).data.message.text = e.target.innerText;
+        //   let content = this.content;
+          this.content.json.find(item => item.id == this.id).data.message.text = e.target.value;
         },
         addButton: function () {
-            let uuid = generateUiid();
             let button = {
-                id: uuid,
+                id: generateUiid(),
                 type: 'postback',
                 title: 'Button',
                 payload: 'Default_Payload',
@@ -74,9 +49,8 @@ export default {
             // this.$store.commit('updateContent', this.content); // So we can push and pop an array, but we cant edit it.
         },
         addQuickReply: function () {
-            let uuid = generateUiid();
             let quick_reply = {
-                id: uuid,
+                id: generateUiid(),
                 content_type: 'text',
                 title: 'Quick Reply',
                 payload: 'Default_Payload',
@@ -90,12 +64,10 @@ export default {
 
 <template>
     <div class="d-flex flex-column border border-primary rounded col-12 px-1">
-        <div class="bubble" :class="{ 'with-buttons': (buttons?.length) }" contenteditable @input="updateMessage">
-            {{ message.data?.message?.text }}
-        </div>
+        <input type="text" class="bubble" :class="{ 'with-buttons': (buttons?.length) }" :value="message.data?.message?.text" @input="updateMessage">
         <button-vue v-for="button in buttons" :id="button.id" :mid="id">
         </button-vue>
-        <div class="btn border m-0 p-0 bg-primary text-white" @click="addButton" :hidden="!hideButtonAdder">
+        <div class="btn border m-0 p-0 bg-primary text-white" @click="addButton" :hidden="buttons.length > 2">
             <div class="d-flex align-items-center justify-content-center btn border bg-primary text-white">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                     class="bi bi-plus-circle m-1" viewBox="0 0 16 16">
@@ -113,7 +85,7 @@ export default {
             </div>
         </div>
         <div class="btn border m-0 p-0 bg-primary text-white container-fluid" @click="addQuickReply"
-            :hidden="!hideQuickReplyAdder">
+            :hidden="quick_replies?.length > 12">
             <div
                 class="d-flex align-items-center justify-content-center btn border bg-primary text-white ">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
