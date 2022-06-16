@@ -29,8 +29,8 @@ npm run build
 ```
 
 ### TODO
-Attachment Uploader Helper
-History Management - Import/ Export
-Export to File
-JSON validator
-Import from valid JSON
+- Attachment Uploader Helper
+- History Management - Import/ Export
+- Export to File
+- JSON validator
+- Import from valid JSON
