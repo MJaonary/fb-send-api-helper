@@ -1,6 +1,6 @@
 {
-  "name": "fb-json",
-  "version": "0.0.0",
+  "name": "fb-send-api-helper",
+  "version": "0.0.1",
   "scripts": {
     "dev": "vite --host",
     "build": "vite build",
@@ -9,7 +9,6 @@
   "dependencies": {
     "axios": "^0.27.2",
     "bootstrap": "^5.1.3",
-    "bootstrap-vue": "^2.22.0",
     "lodash": "^4.17.21",
     "svelte-jsoneditor": "^0.3.58",
     "vue": "^3.2.33",
@@ -18,6 +17,5 @@
   "devDependencies": {
     "@vitejs/plugin-vue": "^2.3.1",
     "vite": "^2.9.5",
-    "vite-plugin-mkcert": "^1.7.2"
   }
 }
