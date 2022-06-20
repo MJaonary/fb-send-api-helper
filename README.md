@@ -1,16 +1,19 @@
-# FB JSON
+# Facebook Send API Helper
 
-This template should help get you started developing with Vue 3 in Vite.
+This program, written Vuejs is a tool that helps creating and managing Facebook Send API message and templates in JSON Format. Many Bot builder has their one, so this project has the goal to create a simple tool that any one can use and tweak as they want.
 
-## Recommended IDE Setup
+The JSON editor used here is from [svelte-jsoneditor](https://github.com/josdejong/svelte-jsoneditor), manualy connected to the app using simple Javascript.
 
-[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur) + [TypeScript Vue Plugin (Volar)](https://marketplace.visualstudio.com/items?itemName=Vue.vscode-typescript-vue-plugin).
+## Structure
 
-## Customize configuration
+Three components are already implemented within this app, the main view, which has a set of buttons, a renderer, and a JSON editor, where you can manage the message and the template, the second view is the attachment uploader helpers, and the last is an another JSON editor that display the latest exported result.
 
-See [Vite Configuration Reference](https://vitejs.dev/config/).
+## Screenshoot
+
+![](./src/assets/fb_send_api_helper.png)
 
 ## Project Setup
+The project is a Vuejs app created using Vite.
 
 ```sh
 npm install
