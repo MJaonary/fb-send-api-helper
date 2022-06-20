@@ -47,10 +47,10 @@ export default {
                     element.image_url = e.target.value;
                     break;
                 case this.id + '-input-title':
-                    element.title = e.target.value;
+                    element.title = e.target.value || 'Title';
                     break;
                 case this.id + '-input-subtitle':
-                    element.subtitle = e.target.value;
+                    element.subtitle = e.target.value || 'Subtitle';
                     break;
                 default:
                     break;
@@ -74,7 +74,6 @@ export default {
         deleteElement: function (id) {
             // console.log(this.index);
             this.$emit('onDeleteElement', this.index);
-            // this.elements = this.elements.filter(item => { return item.id != id });
             this.content.json.find(item => item.id == this.mid)
                 .data.message.attachment.payload.elements = this.elements.filter(item => { return item.id != id });
             // this.$store.commit('updateContent', content);

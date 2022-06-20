@@ -1,16 +1,16 @@
 <script>
-import { generateUiid } from './components/utils/generateuuids';
-
 import jsonEditorVue from './components/jsonEditor.vue';
 import jsonEditorSimpleVue from './components/jsonEditorSimple.vue';
-
 import messageTextVue from './components/messageText.vue';
 import genericTemplatesVue from './components/genericTemplates.vue'
 import attachementUploaderVue from './components/attachementUploader.vue';
 import mediaTemplateVue from './components/mediaTemplate.vue';
 import fileSendVue from './components/fileSend.vue';
+import personalizedElementsVue from './components/personalizedElements.vue';
 
-import _ from "lodash";
+import exporterFunctionsVue from './exporterFunctions.vue';
+import elementsAdderVue from './elementsAdder.vue';
+
 import { mapGetters } from 'vuex';
 
 export default {
@@ -29,272 +29,19 @@ export default {
         genericTemplatesVue,
         attachementUploaderVue,
         mediaTemplateVue,
-        fileSendVue
+        fileSendVue,
+        personalizedElementsVue
     },
+    mixins: [ exporterFunctionsVue, elementsAdderVue ],
     computed: {
         ...mapGetters({
             content: 'getContent',
         })
     },
-    methods: {
-        exportAll: function () {
-            // We need a new element to process without touching the rendering array
-            // (that is due to the direct reference to the store), an workaround is required. 
-            let temporaryTextJson = JSON.stringify(this.content.json);
-            let content = JSON.parse(temporaryTextJson);
-
-            let result = [];
-            content.forEach(element => {
-                switch (element.name) {
-                    case 'message-text-vue': {
-                        if (element.data.message.attachment.payload.buttons.length == 0) {
-                            delete element.data.message.attachment;
-                        } else {
-                            element.data.message.attachment.payload.text = element.data.message.text;
-                            element.data.message.attachment.payload.buttons.forEach(element => {
-                                delete element.id;
-                                if (element.type == 'postback' || element.type == 'phone_number') {
-                                    delete element.url;
-                                    delete element.webview_height_ratio;
-                                    delete element.messenger_extensions;
-                                    delete element.fallback_url;
-                                } else {
-                                    delete element.payload;
-                                }
-                            })
-                            delete element.data.message.text;
-                        };
-                        if (element.data.message.quick_replies.length == 0) {
-                            delete element.data.message.quick_replies;
-                        } else {
-                            element.data.message.quick_replies.forEach(element => {
-                                delete element.id;
-                            })
-                        }
-                        result.push(element.data);
-                    }
-                        break;
-
-                    case 'generic-templates-vue': {
-                        if (element.data.message.quick_replies.length == 0) {
-                            delete element.data.message.quick_replies;
-                        } else {
-                            element.data.message.quick_replies.forEach(element => {
-                                delete element.id;
-                            });
-                        }
-                        element.data.message.attachment.payload.elements.forEach(elemen => {
-                            if (elemen.default_action == null) {
-                                delete elemen.default_action;
-                            }
-                        })
-                        element.data.message.attachment.payload.elements.forEach(element => {
-                            delete element.id;
-                            if (element.buttons.length == 0) {
-                                delete element.buttons;
-                            } else {
-                                element.buttons.forEach(element => {
-                                    delete element.id
-                                    if (element.type == 'postback' || element.type == 'phone_number') {
-                                        delete element.url;
-                                        delete element.webview_height_ratio;
-                                        delete element.messenger_extensions;
-                                        delete element.fallback_url;
-                                    } else {
-                                        delete element.payload;
-                                    }
-                                })
-                            }
-                        });
-
-                        result.push(element.data);
-                    }
-                        break;
-
-                    case 'file-send-vue': {
-                        if (element.data.message.quick_replies.length == 0) {
-                            delete element.data.message.quick_replies;
-                        } else {
-                            element.data.message.quick_replies.forEach(element => {
-                                delete element.id;
-                            });
-                        }
-                        result.push(element.data);
-                    }
-                        break;
-
-                    case 'media-template-vue': {
-                        let message = element.data.message;
-                        if (message.quick_replies.length == 0) {
-                            delete message.quick_replies;
-                        } else {
-                            message.quick_replies.forEach(element => {
-                                delete element.id;
-                            });
-                        }
-                        let elements = message.attachment.payload.elements[0];
-                        delete elements.id;
-                        if (elements.buttons.length < 1) {
-                            delete elements.buttons;
-                        } else {
-                            delete elements.buttons[0].id;
-                            let element = elements.buttons[0];
-                            if (element.type == 'postback' || element.type == 'phone_number') {
-                                delete element.url;
-                                delete element.webview_height_ratio;
-                                delete element.messenger_extensions;
-                                delete element.fallback_url;
-                            } else {
-                                delete element.payload;
-                            }
-                        }
-                        if (elements.url) {
-                            delete elements.attachment_id;
-                        } else {
-                            delete elements.url;
-                        }
-                        result.push(element.data);
-                    }
-                        break;
-
-                    default:
-                        break;
-                }
-
-            });
-            this.exported.json = result;
-            this.copyToClipboard(JSON.stringify(result));
-        },
+    methods: { 
         clearAll: function () {
             this.content.json = [];
         },
-        copyToClipboard: async function (mytext) {
-            try {
-                await navigator.clipboard.writeText(mytext);
-                alert('Copied');
-            } catch (e) {
-                alert(`Cannot copy ${e}`);
-            }
-        },
-        addTextMessageTemplate: function () {
-            console.log('send_text_message');
-            let data = {
-                id: generateUiid(),
-                name: 'message-text-vue',
-                data: {
-                    messaging_type: "RESPONSE",
-                    recipient: {
-                        id: "{{User.id}}",
-                    },
-                    message: {
-                        text: "Entre Un Message.",
-                        quick_replies: [],
-                        attachment: {
-                            type: "template",
-                            payload: {
-                                template_type: "button",
-                                text: "Entre Un Message.",
-                                buttons: [],
-                            },
-                        }
-                    }
-                }
-            };
-            this.$store.commit('pushJson', data);
-        },
-        addGenericTemplate: function () {
-            console.log('send_generic_template');
-            let data = {
-                id: generateUiid(),
-                name: 'generic-templates-vue',
-                data: {
-                    messaging_type: "RESPONSE",
-                    recipient: {
-                        id: "{{User.id}}",
-                    },
-                    message: {
-                        quick_replies: [],
-                        attachment: {
-                            type: "template",
-                            payload: {
-                                template_type: "generic",
-                                image_aspect_ratio: "horizontal",
-                                elements: [
-                                    {
-                                        id: generateUiid(),
-                                        title: "Title",
-                                        image_url: "https://mdbcdn.b-cdn.net/img/new/slides/043.webp",
-                                        subtitle: "Subtitle",
-                                        default_action: null,
-                                        buttons: []
-                                    }
-                                ],
-                            },
-                        }
-                    }
-                }
-            };
-            this.$store.commit('pushJson', data);
-        },
-        addFile: function (filetype) {
-            console.log(`add file type: ${filetype}`);
-            let data = {
-                id: generateUiid(),
-                name: 'file-send-vue',
-                data: {
-                    messaging_type: "RESPONSE",
-                    recipient: {
-                        id: "{{User.id}}"
-                    },
-                    message: {
-                        quick_replies: [],
-                        attachment: {
-                            type: filetype,
-                            payload: {
-                                attachment_id: ""
-                            }
-                        }
-                    }
-                }
-            };
-            this.$store.commit('pushJson', data);
-        },
-        addMediaTemplate: function (filetype) {
-            console.log('media_template-vue');
-            let data = {
-                id: generateUiid(),
-                name: 'media-template-vue',
-                data: {
-                    messaging_type: "RESPONSE",
-                    recipient: {
-                        id: "{{User.id}}",
-                    },
-                    message: {
-                        quick_replies: [],
-                        attachment: {
-                            type: "template",
-                            payload: {
-                                template_type: "media",
-                                sharable: 'false',
-                                elements: [
-                                    {
-                                        id: generateUiid(),
-                                        buttons: [],
-                                        media_type: filetype,
-                                        url: null,
-                                        attachment_id: ''
-                                    }
-                                ],
-                            },
-                        }
-                    }
-                }
-            };
-            this.$store.commit('pushJson', data);
-        },
-        deleteComponentId: function (id) {
-            this.$store.commit('deleteTemplateId', id);
-        }
     }
 }
 </script>
@@ -373,6 +120,14 @@ export default {
                     <div class="col-10 p-1 rounded bg-secondary text-white text-center border items"
                         @click="addGenericTemplate">
                         Card Generic Template
+                    </div>
+                    <div class="col-10 p-1 rounded bg-secondary text-white text-center border items"
+                        @click="addPersonalizedElements('pause')">
+                        Pause
+                    </div>
+                    <div class="col-10 p-1 rounded bg-secondary text-white text-center border items"
+                        @click="addPersonalizedElements('mid')">
+                        Message From MID
                     </div>
                     <div class="col-12 m-2"></div>
                 </div>
