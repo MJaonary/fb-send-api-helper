@@ -6,7 +6,7 @@ The JSON editor used here is from [svelte-jsoneditor](https://github.com/josdejo
 
 ## Structure
 
-Three components are already implemented within this app, the main view, which has a set of buttons, a renderer, and a JSON editor, where you can manage the message and the template, the second view is the attachment uploader helpers, and the last is an another JSON editor that display the latest exported result.
+Three components are already implemented within this app, the main view, which has a set of buttons, a renderer, and a JSON editor, where you can manage the message and the template, the second view is the attachment uploader helpers that heavily uses axios, and the last is an another JSON editor that display the latest exported result.
 
 ## Screenshoot
 
