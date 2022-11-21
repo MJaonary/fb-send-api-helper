@@ -19,11 +19,9 @@ export default {
         switch (element.name) {
           case "message-text-vue":
             {
-              if (element.data.message.attachment.payload.buttons.length == 0) {
+              if (element.data.message.attachment.payload.buttons.length === 0) {
                 delete element.data.message.attachment;
               } else {
-                element.data.message.attachment.payload.text =
-                  element.data.message.text;
                 element.data.message.attachment.payload.buttons.forEach(
                   (element) => {
                     delete element.id;
