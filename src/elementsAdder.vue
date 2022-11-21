@@ -12,7 +12,6 @@ export default {
     },
     methods: {
         addTextMessageTemplate: function () {
-            console.log('send_text_message');
             let data = {
                 id: generateUiid(),
                 name: 'message-text-vue',
@@ -22,13 +21,13 @@ export default {
                         id: "{{User.id}}",
                     },
                     message: {
-                        text: "Entre Un Message.",
+                        text: "Enter a text message...",
                         quick_replies: [],
                         attachment: {
                             type: "template",
                             payload: {
                                 template_type: "button",
-                                text: "Entre Un Message.",
+                                text: "Enter a text message...",
                                 buttons: [],
                             },
                         }

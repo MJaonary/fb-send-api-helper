@@ -175,7 +175,7 @@ export default {
                         :</label>
                     <div class="col-8">
                         <input type="text" class="form-control" :id="id + 'button-form-webview-fallback-url'"
-                            placeholder="Fallback Url">
+                            placeholder="Fallback Url" :value="button.fallback_url">
                     </div>
                 </div>
             </div>
