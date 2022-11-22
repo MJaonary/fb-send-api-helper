@@ -1,11 +1,18 @@
 <script>
 import { JSONEditor } from "svelte-jsoneditor/dist/jsoneditor.js";
+
 import axios from "axios";
+
+// Importing stored values from vuex
 import { mapGetters } from "vuex";
+
+// Import all SVGS
+import Exported from "../assets/svg/Exported.svg";
 
 export default {
   name: "JsonEditorSimpleVue",
   emits: ["update:modelValue"],
+  components: { Exported },
   data() {
     return {
       editor: null,
@@ -91,6 +98,12 @@ export default {
         alert(`Cannot copy ${e}`);
       }
     },
+    modifyLatestAccessToken: function () {
+      this.$store.commit(
+        "updatePageAccessToken",
+        this.$refs.page_access_token_input.value
+      );
+    },
     updatePsid: function () {
       this.$store.commit("updateUserPsid", this.$refs.input_user_psid.value);
     },
@@ -106,7 +119,7 @@ export default {
             this.user_psid
           );
         } else {
-          alert("User PSID is no set");
+          alert("User PSID is not set");
           return;
         }
       }
@@ -147,43 +160,48 @@ export default {
       :class="editorFullScreen ? 'fullscreen' : 'notfullscreen'"
       class="jsoneditor"
     ></div>
-    <div class="message-sender">
+    <div class="message-sender m-1">
+      <label for="user_psid">PSID :</label>
+      <div class="d-flex">
+        <input
+          class="input-psid form-control"
+          id="user_psid"
+          ref="input_user_psid"
+          type="text"
+          placeholder="Enter PSID"
+          @input="updatePsid"
+          :value="user_psid"
+          name="user_psid"
+          autocomplete="on"
+        />
+        <button class="d-flex p-2 m-0 align-items-center btn bg-primary text-white" @click.prevent="sendMessage">
+          Send <Exported class="m-2" />
+        </button>
+      </div>
+    </div>
+    <div class="form-group m-1 p-1">
+      <label for="page_access_token">Enter your Page Access Token here :</label>
       <input
-        class="input-psid form-control"
-        ref="input_user_psid"
         type="text"
-        placeholder="Enter PSID"
-        @input="updatePsid"
-        :value="user_psid"
-        name="user_psid"
-        autocomplete="on"
+        class="form-control"
+        id="page_access_token"
+        ref="page_access_token_input"
+        :value="page_access_token"
+        @input="modifyLatestAccessToken"
       />
-      <button class="btn bg-primary text-white" @click.prevent="sendMessage">Send</button>
     </div>
   </form>
 </template>
 
 <style scoped>
-.message-sender {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  border: 2px solid;
-  border-radius: 1rem;
-  height: 6%;
-  padding: 2px;
+.jsoneditor {
+  overflow: hidden;
+  height: 90%;
 }
-
 .input-psid {
   margin: 10px;
   border-radius: 1rem;
 }
-
-.jsoneditor {
-  overflow: hidden;
-  height: 94%;
-}
-
 .notfullscreen {
   content: "";
 }

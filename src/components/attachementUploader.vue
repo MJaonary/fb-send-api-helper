@@ -1,5 +1,7 @@
 <script>
 import axios from "axios";
+
+// Importing stored values from vuex
 import { mapGetters } from "vuex";
 
 export default {
@@ -33,8 +35,7 @@ export default {
     modifyLatestFileType: function () {
       this.$store.commit("updateFileType", this.$refs.file_type_input.value);
     },
-    sendRequest: async function () {
-      console.log("Request for getting attachment id"); // TODO Show an animation
+    sendRequest: async function () { // TODO Show an animation
       if (this.selectedMode == "send_from_url") {
         let data = {
           message: {
@@ -72,7 +73,9 @@ export default {
             alert("There was an error while attaching the file");
           }
         } catch (error) {
-          alert(`Error while Uploading file from URL ${error.response?.data.error.message}`);
+          alert(
+            `Error while Uploading file from URL ${error.response?.data.error.message}`
+          );
         }
       } else if (this.selectedMode == "send_from_file") {
         const formData = new FormData();
