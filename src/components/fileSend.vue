@@ -51,10 +51,7 @@ export default {
     onDropQuickReply(dropResult) {
       this.content.json.find(
         (item) => item.id == this.id
-      ).data.message.quick_replies = applyDrag(
-        this.quick_replies,
-        dropResult
-      );
+      ).data.message.quick_replies = applyDrag(this.quick_replies, dropResult);
     },
   },
 };
@@ -72,19 +69,19 @@ export default {
       @input="updateAttachmentId"
     />
   </div>
-  <div class="container-fluid">
-    <Container
-      @drop="onDropQuickReply"
-      drag-handle-selector=".column-drag-handle"
-      :hidden="quick_replies.length === 0"
-    >
-      <quick-reply-vue
-        v-for="quick_reply in quick_replies"
-        :id="quick_reply.id"
-        :mid="id"
-      ></quick-reply-vue>
-    </Container>
-  </div>
+
+  <Container
+    @drop="onDropQuickReply"
+    drag-handle-selector=".column-drag-handle"
+    :hidden="quick_replies.length === 0"
+  >
+    <quick-reply-vue
+      v-for="quick_reply in quick_replies"
+      :id="quick_reply.id"
+      :mid="id"
+    ></quick-reply-vue>
+  </Container>
+
   <div
     class="btn border m-0 p-0 bg-primary text-white container-fluid"
     @click="addQuickReply"
