@@ -105,6 +105,7 @@ export default {
 <template>
   <div class="carousel slide" data-bs-interval="false" style="width: 100%">
     <div class="carousel-inner" style="width: 100%">
+      
       <template-vue
         v-for="(element, index) in elements"
         :id="element.id"

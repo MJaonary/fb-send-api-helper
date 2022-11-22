@@ -38,14 +38,17 @@ export default {
     toogleButtonForm: function () {
       this.formEdit = !this.formEdit;
     },
+
     deleteQuickReply: function () {
       let quick_replies = _.reject(this.quick_replies, (e) => {
         return e.id == this.id;
       });
+
       this.content.json.find(
         (item) => item.id == this.mid
       ).data.message.quick_replies = quick_replies;
     },
+
     onFormChange: function (e) {
       let value = e.target.value;
       switch (e.target.id) {
@@ -72,15 +75,21 @@ export default {
 
 <template>
   <Draggable class="d-flex align-items-center border rounded col-12 my-1">
+    <!-- The only area in witch we can drag the element -->
     <span
       class="column-drag-handle p-1"
       style="float: left; padding: 0 10px; width: 5%"
       >&#x2630;</span
     >
+    <!-- The only area in witch we can drag the element -->
+
+    <!-- The Quick Reply element that show options when clicked -->
     <div class="d-flex flex-column col-12" style="width: 90%">
       <div class="btn border" @click="toogleButtonForm">
         {{ quick_reply.title }}
       </div>
+
+      <!-- The form that we fill as options to the quick reply -->
       <form
         class="border mb-1 col-12 rounded"
         :hidden="formEdit"
@@ -150,15 +159,17 @@ export default {
           Hide options
         </div>
       </form>
+      <!-- The form that we fill as options to the quick reply -->
     </div>
+    <!-- The Quick Reply element that show options when clicked -->
 
+    <!-- The button that helps deleting the Quick Reply -->
     <div
-      class="d-flex align-items-center justify-content-center text-danger"
+      class="d-flex align-items-center justify-content-center text-danger p-1"
       @click="deleteQuickReply"
     >
       <DeleteIcon />
     </div>
+    <!-- The button that helps deleting the Quick Reply -->
   </Draggable>
 </template>
-
-<style scoped></style>

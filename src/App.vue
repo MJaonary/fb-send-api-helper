@@ -75,8 +75,8 @@ export default {
 </script>
 
 <template>
-  <!-- Side Menu that will helps switching between functionalities -->
   <div class="d-flex border" style="height: 100%; width: 100%">
+    <!-- Side Menu that will helps switching between functionalities -->
     <div class="d-flex flex-column border" :style="`height: 100%`">
       <div
         v-for="item in [
@@ -100,7 +100,9 @@ export default {
         <component :is="item.type"></component>
       </div>
     </div>
+    <!-- Side Menu that will helps switching between functionalities -->
 
+    <!-- Main component that helps creating and editing messages -->
     <div
       v-if="toggleMenu == 'main_menu'"
       class="d-flex justify-content-start"
@@ -128,10 +130,10 @@ export default {
               { text: 'Video ID', onClick: () => addFile('video') },
               { text: 'Audio', onClick: () => addFile('audio') },
               { text: 'Card Generic', onClick: addGenericTemplate },
-              // {
-              //   text: 'Pause',
-              //   onClick: () => addPersonalizedElements('pause'),
-              // },
+              {
+                text: 'Pause',
+                onClick: () => addPersonalizedElements('pause'),
+              },
               // {
               //   text: 'MessageID',
               //   onClick: () => addPersonalizedElements('mid'),
@@ -163,13 +165,14 @@ export default {
         <div class="p-2 mb-1 fb-opt-header border text-center mb-1">
           Parameters Options
         </div>
+
         <Container
           class="display d-flex flex-column h-100 align-items-center"
           drag-handle-selector=".column-drag-handle"
           @drop="onDrop"
+          orientation="vertical"
         >
           <!-- Looping Rendering here -- Begin -->
-
           <Draggable
             v-for="items in content.json"
             class="col-12"
@@ -211,17 +214,22 @@ export default {
         ></json-editor-vue>
       </div>
     </div>
+    <!-- Main component that helps creating and editing messages -->
 
+    <!-- Attachment Uploader utility -->
     <div class="col-12" v-if="toggleMenu === 'attachment_uploader'">
       <attachement-uploader-vue></attachement-uploader-vue>
     </div>
+    <!-- Attachment Uploader utility -->
 
+    <!-- Json editor that display the final result and send message -->
     <div style="width: 100%" v-if="toggleMenu === 'json_editor'">
       <json-editor-simple-vue
         :model-value="exported"
         class="h-100 overflow-hidden"
       ></json-editor-simple-vue>
     </div>
+    <!-- Json editor that display the final result and send message -->
   </div>
 </template>
 

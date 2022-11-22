@@ -77,10 +77,7 @@ export default {
     onDropQuickReply(dropResult) {
       this.content.json.find(
         (item) => item.id == this.id
-      ).data.message.quick_replies = applyDrag(
-        this.quick_replies,
-        dropResult
-      );
+      ).data.message.quick_replies = applyDrag(this.quick_replies, dropResult);
     },
   },
 };
@@ -88,6 +85,7 @@ export default {
 
 <template>
   <div class="d-flex flex-column border border-primary rounded col-12 px-1">
+    <!-- Bublle that mimic Facebook Messenger Message Box -->
     <div
       type="text"
       class="bubble"
@@ -97,11 +95,14 @@ export default {
     >
       {{ message.data?.message?.text }}
     </div>
+    <!-- Bublle that mimic Facebook Messenger Message Box -->
 
+    <!-- Buttons that can be draged and droped to reorder them -->
     <Container
       @drop="onDropButton"
       drag-handle-selector=".column-drag-handle"
       :hidden="buttons.length === 0"
+      orientation="vertical"
     >
       <button-vue
         v-for="button in buttons"
@@ -111,7 +112,9 @@ export default {
       >
       </button-vue>
     </Container>
+    <!-- Buttons that can be draged and droped to reorder them -->
 
+    <!-- Button adder  -->
     <div
       class="btn border m-0 p-0 bg-primary text-white"
       @click="addButton"
@@ -124,35 +127,42 @@ export default {
         <div>Add Button</div>
       </div>
     </div>
+    <!-- Button adder  -->
   </div>
 
+  <!-- Quick Replies that can be draged and droped to reorder them -->
   <Container
     @drop="onDropQuickReply"
     drag-handle-selector=".column-drag-handle"
     :hidden="quick_replies.length === 0"
+    orientation="vertical"
   >
     <quick-reply-vue
       v-for="quick_reply in quick_replies"
+      :key="quick_reply.id"
       :id="quick_reply.id"
       :mid="id"
     ></quick-reply-vue>
   </Container>
+  <!-- Quick Replies that can be draged and droped to reorder them -->
 
+  <!-- Quick Replies adder -->
   <div
     class="btn border m-0 p-0 bg-primary text-white container-fluid"
     @click="addQuickReply"
     :hidden="quick_replies?.length > 12"
   >
     <div
-      class="d-flex align-items-center justify-content-center btn border bg-primary text-white"
+      class="d-flex align-items-center justify-content-center btn text-white"
     >
       <AddIcon />
       <div>Quick Reply</div>
     </div>
   </div>
+  <!-- Quick Replies adder -->
 </template>
 
-<style scoped>
+<style>
 /**All Bubble styles will be combined here */
 .bubble {
   white-space: pre-wrap;

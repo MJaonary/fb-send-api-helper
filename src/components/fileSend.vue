@@ -46,7 +46,7 @@ export default {
         payload: "Default_Payload",
         image_url: "",
       };
-      this.quick_replies.push(quick_reply); // TODO: Try to dispatch it
+      this.quick_replies.push(quick_reply);
     },
     onDropQuickReply(dropResult) {
       this.content.json.find(
@@ -61,19 +61,25 @@ export default {
   <label>
     Paste {{ message.data.message.attachment.type }} attachment_id here :</label
   >
-  <div class="d-flex flex-column border border-primary rounded col-12 px-1">
+
+  <!-- Bublle that mimic Facebook Messenger Message Box -->
+  <div class="d-flex flex-column border border-primary rounded col-12">
     <input
       type="text"
       class="bubble"
       :value="message.data.message.attachment.payload.attachment_id"
       @input="updateAttachmentId"
+      style="border: none"
     />
   </div>
+  <!-- Bublle that mimic Facebook Messenger Message Box -->
 
+  <!-- Quick Replies that can be draged and droped to reorder them -->
   <Container
     @drop="onDropQuickReply"
     drag-handle-selector=".column-drag-handle"
     :hidden="quick_replies.length === 0"
+    orientation="vertical"
   >
     <quick-reply-vue
       v-for="quick_reply in quick_replies"
@@ -81,7 +87,9 @@ export default {
       :mid="id"
     ></quick-reply-vue>
   </Container>
+  <!-- Quick Replies that can be draged and droped to reorder them -->
 
+  <!-- Quick Replies adder -->
   <div
     class="btn border m-0 p-0 bg-primary text-white container-fluid"
     @click="addQuickReply"
@@ -94,6 +102,5 @@ export default {
       <div>Quick Reply</div>
     </div>
   </div>
+  <!-- Quick Replies adder -->
 </template>
-
-<style></style>

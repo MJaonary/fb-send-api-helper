@@ -111,13 +111,16 @@ export default {
 
 <template>
   <div class="border p-1 rounded text-center">
+    <!-- Image and Label for instructions -->
     Media template {{ elements.media_type.toUpperCase() }}
     <img
       src="https://mdbcdn.b-cdn.net/img/new/slides/043.webp"
       class="border p-1 rounded"
       style="width: 100%; height: 9rem; object-fit: contain"
     />
+    <!-- Image and Label for instructions -->
 
+    <!-- Form witch we need to fill for the JSON -->
     <form class="border mb-1 col-12 rounded" @input="onFormChange">
       <div class="col-auto m-1">
         <label class="mr-2" :for="id + 'button-form-select'"
@@ -161,11 +164,14 @@ export default {
         </div>
       </div>
     </form>
+    <!-- Form witch we need to fill for the JSON -->
 
+    <!-- Buttons that can be draged and droped to reorder them -->
     <Container
       @drop="onDropButton"
       drag-handle-selector=".column-drag-handle"
       :hidden="buttons.length === 0"
+      orientation="vertical"
     >
       <button-vue
         v-for="button in buttons"
@@ -173,7 +179,9 @@ export default {
         :mid="id"
       ></button-vue>
     </Container>
+    <!-- Buttons that can be draged and droped to reorder them -->
 
+    <!-- Button adder  -->
     <div
       class="btn border m-0 p-0 bg-primary text-white col-12"
       @click="addButton"
@@ -186,20 +194,25 @@ export default {
         <div>Add Button</div>
       </div>
     </div>
+    <!-- Button adder  -->
   </div>
-  <div class="container-fluid">
-    <Container
-      @drop="onDropQuickReply"
-      drag-handle-selector=".column-drag-handle"
-      :hidden="quick_replies.length === 0"
-    >
-      <quick-reply-vue
-        v-for="quick_reply in quick_replies"
-        :id="quick_reply.id"
-        :mid="id"
-      ></quick-reply-vue>
-    </Container>
-  </div>
+
+  <!-- Quick Replies that can be draged and droped to reorder them -->
+  <Container
+    @drop="onDropQuickReply"
+    drag-handle-selector=".column-drag-handle"
+    :hidden="quick_replies.length === 0"
+    orientation="vertical"
+  >
+    <quick-reply-vue
+      v-for="quick_reply in quick_replies"
+      :id="quick_reply.id"
+      :mid="id"
+    ></quick-reply-vue>
+  </Container>
+  <!-- Quick Replies that can be draged and droped to reorder them -->
+
+  <!-- Quick Replies adder -->
   <div
     class="btn border m-0 p-0 bg-primary text-white container-fluid"
     @click="addQuickReply"
@@ -212,7 +225,9 @@ export default {
       <div>Quick Reply</div>
     </div>
   </div>
+  <!-- Quick Replies adder -->
 
+  <!-- Media sharable propertie -->
   <div class="form-check">
     <input
       class="form-check-input"
@@ -226,6 +241,7 @@ export default {
       Media Sharable {{ mediaSharable }}
     </label>
   </div>
+  <!-- Media sharable propertie -->
 </template>
 
 <style></style>

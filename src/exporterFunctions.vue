@@ -152,11 +152,11 @@ export default {
             }
             break;
 
-          // case "personalized-elements-vue":
-          //   {
-          //     return element.data;
-          //   }
-          //   break;
+          case "personalized-elements-vue":
+            {
+              return element.data;
+            }
+            break;
 
           default:
             break;
