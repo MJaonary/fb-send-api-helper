@@ -91,12 +91,15 @@ export default {
 
 <template>
   <Draggable class="d-flex align-items-center border rounded col-12 my-1">
+    <!-- The only field that is allow to drag the element -->
     <span
       class="column-drag-handle p-1"
       style="float: left; padding: 0 10px; width: 5%; z-index: 10"
       >&#x2630;</span
     >
+    <!-- The only field that is allow to drag the element -->
 
+    <!-- Form that we need to fill to complte JSON -->
     <div class="d-flex flex-column col-12" style="width: 90%">
       <div class="btn border" @click="toogleButtonForm" style="width: 100%">
         {{ button.title }}
@@ -258,7 +261,9 @@ export default {
         </div>
       </form>
     </div>
+    <!-- Form that we need to fill to complte JSON -->
 
+    <!-- Delete Button  -->
     <div
       class="d-flex align-items-center justify-content-center text-danger"
       @click="deleteButton"
@@ -266,6 +271,7 @@ export default {
     >
       <DeleteIcon />
     </div>
+    <!-- Delete Button  -->
   </Draggable>
 </template>
 

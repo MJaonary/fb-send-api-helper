@@ -68,18 +68,21 @@ export default {
 
 <template>
   <div class="d-flex flex-column align-items-center border rounded col-12">
+    <!-- Default action button option and delete -->
     <div class="d-flex col-12">
       <div class="btn border mb-1 col-10" @click="toogleButtonForm">
         Default Action
       </div>
       <div
-        class="d-flex align-items-center justify-content-center btn border col-2 mb-1 text-white bg-danger"
+        class="d-flex align-items-center justify-content-center border col-2 mb-1 text-danger"
         @click="deleteDefaultAction"
       >
         <DeleteIcon />
       </div>
     </div>
+    <!-- Default action button option and delete -->
 
+    <!-- Default Action form to complete JSON -->
     <form
       class="border mb-1 col-12 rounded"
       :hidden="formEdit"
@@ -168,16 +171,12 @@ export default {
         </div>
       </div>
     </form>
+    <!-- Default Action form to complete JSON -->
   </div>
 </template>
 
 <style scoped>
 * {
   font-size: small;
-}
-
-.btn:active {
-  background-color: #004cd0c5 !important;
-  color: white !important;
 }
 </style>
