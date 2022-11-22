@@ -63,7 +63,7 @@ export default {
 
 <template>
   <!-- Side Menu that will helps switching between functionalities -->
-  <div class="d-flex" style="height: 100%; width: 100%">
+  <div class="d-flex border" style="height: 100%; width: 100%">
     <div class="d-flex flex-column border" :style="`height: 100%`">
       <div
         v-for="item in [
@@ -93,9 +93,9 @@ export default {
       class="d-flex justify-content-start"
       style="width: 100%"
     >
-      <div class="d-flex flex-column p-2 border col-2">
+      <div class="d-flex flex-column p-1 border col-2">
         <div class="p-2 border text-center font-weight-bold">Facebook Responses</div>
-        <div class="d-flex flex-column align-items-center">
+        <div class="mb-1  d-flex flex-column align-items-center">
           <div
             class="btn btn-outline-primary m-1 col-11"
             v-for="item in [
@@ -113,14 +113,14 @@ export default {
               { text: 'Video ID', onClick: () => addFile('video') },
               { text: 'Audio', onClick: () => addFile('audio') },
               { text: 'Card Generic', onClick: addGenericTemplate },
-              {
-                text: 'Pause',
-                onClick: () => addPersonalizedElements('pause'),
-              },
-              {
-                text: 'MessageID',
-                onClick: () => addPersonalizedElements('mid'),
-              },
+              // {
+              //   text: 'Pause',
+              //   onClick: () => addPersonalizedElements('pause'),
+              // },
+              // {
+              //   text: 'MessageID',
+              //   onClick: () => addPersonalizedElements('mid'),
+              // },
             ]"
             @click="item.onClick"
           >
@@ -144,8 +144,8 @@ export default {
         </div>
       </div>
 
-      <div class="d-flex flex-column p-2 border overflow-hidden col-4">
-        <div class="p-2 fb-opt-header border text-center mb-1">Parameters Options</div>
+      <div class="d-flex flex-column p-1 border overflow-hidden col-4">
+        <div class="p-2 mb-1 fb-opt-header border text-center mb-1">Parameters Options</div>
         <div class="display d-flex flex-column h-100 align-items-center">
           <!-- Looping Rendering here -- Begin -->
           <div v-for="items in content.json" class="col-12">
@@ -164,8 +164,8 @@ export default {
         </div>
       </div>
 
-      <!-- Nous Ecoutons tout simplemetnt le $store.state.content ici -->
-      <div class="d-flex flex-column p-2 border col-6">
+      <!-- We just have to listen to $store.state.content here -->
+      <div class="d-flex flex-column p-1 mb-1 border col-6">
         <div class="p-2 fb-opt-header border text-center mb-1">JSON Output</div>
         <json-editor-vue
           :modelValue="content"

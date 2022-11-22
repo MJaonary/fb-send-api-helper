@@ -16,7 +16,7 @@ export default {
   components: {
     buttonVue,
     quickReplyVue,
-    AddIcon
+    AddIcon,
   },
   props: ["id"],
   computed: {
@@ -115,6 +115,7 @@ export default {
 </template>
 
 <style>
+/**All Bubble styles will be combined here */
 .bubble {
   white-space: pre-wrap;
   background-color: #e5e5e5;

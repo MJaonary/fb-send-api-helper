@@ -14,12 +14,13 @@ export default {
       let temporaryTextJson = JSON.stringify(this.content.json);
       let newContent = JSON.parse(temporaryTextJson);
 
-      let result = [];
-      newContent.forEach((element) => {
+      let result = newContent.map((element) => {
         switch (element.name) {
           case "message-text-vue":
             {
-              if (element.data.message.attachment.payload.buttons.length === 0) {
+              if (
+                element.data.message.attachment.payload.buttons.length === 0
+              ) {
                 delete element.data.message.attachment;
               } else {
                 element.data.message.attachment.payload.buttons.forEach(
@@ -50,7 +51,7 @@ export default {
                   delete element.id;
                 });
               }
-              result.push(element.data);
+              return element.data;
             }
             break;
 
@@ -96,8 +97,7 @@ export default {
                   }
                 }
               );
-
-              result.push(element.data);
+              return element.data;
             }
             break;
 
@@ -110,7 +110,7 @@ export default {
                   delete element.id;
                 });
               }
-              result.push(element.data);
+              return element.data;
             }
             break;
 
@@ -148,15 +148,15 @@ export default {
               } else {
                 delete elements.url;
               }
-              result.push(element.data);
+              return element.data;
             }
             break;
 
-          case "personalized-elements-vue":
-            {
-              result.push(element.data);
-            }
-            break;
+          // case "personalized-elements-vue":
+          //   {
+          //     return element.data;
+          //   }
+          //   break;
 
           default:
             break;
