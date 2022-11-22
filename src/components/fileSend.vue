@@ -11,10 +11,15 @@ import { generateUiid } from "./utils/generateuuids";
 // Import all SVGS
 import AddIcon from "../assets/svg/AddIcon.svg";
 
+// Drag and Drop Functionality
+import { Container } from "vue3-smooth-dnd";
+import { applyDrag } from "../components/utils/helpers";
+
 export default {
   components: {
     quickReplyVue,
     AddIcon,
+    Container,
   },
   props: ["id"],
   computed: {
@@ -43,6 +48,14 @@ export default {
       };
       this.quick_replies.push(quick_reply); // TODO: Try to dispatch it
     },
+    onDropQuickReply(dropResult) {
+      this.content.json.find(
+        (item) => item.id == this.id
+      ).data.message.quick_replies = applyDrag(
+        this.quick_replies,
+        dropResult
+      );
+    },
   },
 };
 </script>
@@ -60,13 +73,17 @@ export default {
     />
   </div>
   <div class="container-fluid">
-    <div class="d-flex flex-column align-items-center">
+    <Container
+      @drop="onDropQuickReply"
+      drag-handle-selector=".column-drag-handle"
+      :hidden="quick_replies.length === 0"
+    >
       <quick-reply-vue
         v-for="quick_reply in quick_replies"
         :id="quick_reply.id"
         :mid="id"
       ></quick-reply-vue>
-    </div>
+    </Container>
   </div>
   <div
     class="btn border m-0 p-0 bg-primary text-white container-fluid"
@@ -82,5 +99,4 @@ export default {
   </div>
 </template>
 
-<style>
-</style>
+<style></style>

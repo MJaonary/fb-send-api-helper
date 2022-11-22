@@ -12,11 +12,16 @@ import { generateUiid } from "./utils/generateuuids";
 // Import all SVGS
 import AddIcon from "../assets/svg/AddIcon.svg";
 
+// Drag and Drop Functionality
+import { Container } from "vue3-smooth-dnd";
+import { applyDrag } from "../components/utils/helpers";
+
 export default {
   components: {
     buttonVue,
     quickReplyVue,
     AddIcon,
+    Container,
   },
   data() {
     return {
@@ -87,6 +92,19 @@ export default {
           break;
       }
     },
+    onDropButton(dropResult) {
+      this.content.json.find(
+        (item) => item.id == this.id
+      ).data.message.attachment.payload.buttons = applyDrag(
+        this.buttons,
+        dropResult
+      );
+    },
+    onDropQuickReply(dropResult) {
+      this.content.json.find(
+        (item) => item.id == this.id
+      ).data.message.quick_replies = applyDrag(this.quick_replies, dropResult);
+    },
   },
 };
 </script>
@@ -144,11 +162,18 @@ export default {
       </div>
     </form>
 
-    <button-vue
-      v-for="button in buttons"
-      :id="button.id"
-      :mid="id"
-    ></button-vue>
+    <Container
+      @drop="onDropButton"
+      drag-handle-selector=".column-drag-handle"
+      :hidden="buttons.length === 0"
+    >
+      <button-vue
+        v-for="button in buttons"
+        :id="button.id"
+        :mid="id"
+      ></button-vue>
+    </Container>
+
     <div
       class="btn border m-0 p-0 bg-primary text-white col-12"
       @click="addButton"
@@ -163,13 +188,17 @@ export default {
     </div>
   </div>
   <div class="container-fluid">
-    <div class="d-flex flex-column align-items-center">
+    <Container
+      @drop="onDropQuickReply"
+      drag-handle-selector=".column-drag-handle"
+      :hidden="quick_replies.length === 0"
+    >
       <quick-reply-vue
         v-for="quick_reply in quick_replies"
         :id="quick_reply.id"
         :mid="id"
       ></quick-reply-vue>
-    </div>
+    </Container>
   </div>
   <div
     class="btn border m-0 p-0 bg-primary text-white container-fluid"

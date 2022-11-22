@@ -225,4 +225,8 @@ export default {
   </div>
 </template>
 
-<style></style>
+<style>
+.column-drag-handle:hover {
+  cursor: grab;
+}
+</style>

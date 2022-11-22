@@ -66,11 +66,19 @@ export default {
       };
       this.quick_replies.push(quick_reply);
     },
-    onDrop(dropResult) {
+    onDropButton(dropResult) {
       this.content.json.find(
         (item) => item.id == this.id
       ).data.message.attachment.payload.buttons = applyDrag(
         this.buttons,
+        dropResult
+      );
+    },
+    onDropQuickReply(dropResult) {
+      this.content.json.find(
+        (item) => item.id == this.id
+      ).data.message.quick_replies = applyDrag(
+        this.quick_replies,
         dropResult
       );
     },
@@ -91,7 +99,7 @@ export default {
     </div>
 
     <Container
-      @drop="onDrop"
+      @drop="onDropButton"
       drag-handle-selector=".column-drag-handle"
       :hidden="buttons.length === 0"
     >
@@ -119,7 +127,7 @@ export default {
   </div>
 
   <Container
-    @drop="onDrop"
+    @drop="onDropQuickReply"
     drag-handle-selector=".column-drag-handle"
     :hidden="quick_replies.length === 0"
   >
