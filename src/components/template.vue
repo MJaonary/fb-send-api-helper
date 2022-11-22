@@ -106,138 +106,144 @@ export default {
 </script>
 
 <template>
-  <div class="d-flex flex-column" @input="elementInput">
-    <div class="border" style="position: relative">
-      <!-- Displayed Image from URL -->
-      <img
-        :src="
-          element.image_url ||
-          'https://mdbcdn.b-cdn.net/img/new/slides/043.webp'
-        "
-        class="d-block w-100"
-        alt="Exotic Fruits"
-        style="width: 100%; height: 9rem; object-fit: contain"
-      />
-      <!-- Displayed Image from URL -->
-
-      <!-- Current page displayer -->
-      <div class="index-container d-flex flex-column align-items-center">
-        <h2>
-          {{ index }}
-        </h2>
-        <h2
-          style="
-            left: 0;
-            background-color: red;
-            color: white;
-            border-radius: 20%;
-            width: 1em;
-            display: flex;
-            justify-content: center;
+  <div
+    class="carousel-item px-1"
+    :class="class"
+    style="max-width: 100%; border-radius: 20"
+  >
+    <div class="d-flex flex-column" @input="elementInput">
+      <div class="border" style="position: relative">
+        <!-- Displayed Image from URL -->
+        <img
+          :src="
+            element.image_url ||
+            'https://mdbcdn.b-cdn.net/img/new/slides/043.webp'
           "
-        >
-          {{ elements.length - 1 }}
-        </h2>
+          class="d-block w-100"
+          alt="Exotic Fruits"
+          style="width: 100%; height: 9rem; object-fit: contain"
+        />
+        <!-- Displayed Image from URL -->
+
+        <!-- Current page displayer -->
+        <div class="index-container d-flex flex-column align-items-center">
+          <h2>
+            {{ index }}
+          </h2>
+          <h2
+            style="
+              left: 0;
+              background-color: red;
+              color: white;
+              border-radius: 20%;
+              width: 1em;
+              display: flex;
+              justify-content: center;
+            "
+          >
+            {{ elements.length - 1 }}
+          </h2>
+        </div>
+        <!-- Current page displayer -->
+
+        <!-- Template Image URL -->
+        <input
+          :id="id + '-input-image_url'"
+          type="text"
+          class="text-center centered templates-input"
+          placeholder="Paste Url Here"
+          :value="element.image_url"
+        />
+        <!-- Template Image URL -->
+
+        <!-- Template Title -->
+        <input
+          :id="id + '-input-title'"
+          type="text"
+          class="text-center col-12"
+          placeholder="Title"
+          :value="element.title"
+        />
+        <!-- Template Title -->
+
+        <!-- Template Subtitle -->
+        <input
+          :id="id + '-input-subtitle'"
+          type="text"
+          class="text-center mt-1 col-12"
+          placeholder="Subtitle"
+          :value="element.subtitle"
+        />
+        <!-- Template Subtitle -->
       </div>
-      <!-- Current page displayer -->
 
-      <!-- Template Image URL -->
-      <input
-        :id="id + '-input-image_url'"
-        type="text"
-        class="text-center centered templates-input"
-        placeholder="Paste Url Here"
-        :value="element.image_url"
-      />
-      <!-- Template Image URL -->
-
-      <!-- Template Title -->
-      <input
-        :id="id + '-input-title'"
-        type="text"
-        class="text-center col-12"
-        placeholder="Title"
-        :value="element.title"
-      />
-      <!-- Template Title -->
-
-      <!-- Template Subtitle -->
-      <input
-        :id="id + '-input-subtitle'"
-        type="text"
-        class="text-center mt-1 col-12"
-        placeholder="Subtitle"
-        :value="element.subtitle"
-      />
-      <!-- Template Subtitle -->
-    </div>
-
-    <!-- Default action conditional -->
-    <default-action-vue
-      v-if="default_action"
-      id="123456789"
-      :mid="mid"
-      :eid="id"
-    ></default-action-vue>
-    <!-- Default action conditional -->
-
-    <!-- Default action adder -->
-    <div
-      class="btn border m-0 p-0 bg-primary text-white"
-      @click="addDefaultAction"
-      :hidden="default_action"
-    >
-      <div
-        class="d-flex align-items-center justify-content-center btn border bg-primary text-white"
-      >
-        <AddIcon />
-        <div>Add Default action</div>
-      </div>
-    </div>
-    <!-- Default action adder -->
-
-    <!-- Buttons that can be draged and droped to reorder them -->
-    <Container
-      @drop="onDropButton"
-      drag-handle-selector=".column-drag-handle"
-      :hidden="buttons.length === 0"
-      orientation="vertical"
-    >
-      <button-vue
-        v-for="button in buttons"
-        :id="button.id"
+      <!-- Default action conditional -->
+      <default-action-vue
+        v-if="default_action"
+        id="123456789"
         :mid="mid"
         :eid="id"
-      ></button-vue>
-    </Container>
-    <!-- Buttons that can be draged and droped to reorder them -->
+      ></default-action-vue>
+      <!-- Default action conditional -->
 
-    <!-- Button adder  -->
-    <div
-      class="btn border m-0 p-0 bg-primary text-white"
-      @click="addButton"
-      :hidden="buttons.length > 2"
-    >
+      <!-- Default action adder -->
       <div
-        class="d-flex align-items-center justify-content-center btn border bg-primary text-white"
+        class="btn border m-0 p-0 bg-primary text-white"
+        @click="addDefaultAction"
+        :hidden="default_action"
       >
-        <AddIcon />
-        <div>Add Button</div>
+        <div
+          class="d-flex align-items-center justify-content-center btn border bg-primary text-white"
+        >
+          <AddIcon />
+          <div>Add Default action</div>
+        </div>
       </div>
-    </div>
-    <!-- Button adder  -->
+      <!-- Default action adder -->
 
-    <!-- Delete element with his Index number -->
-    <div class="d-flex justify-content-center">
-      <div
-        class="btn btn-danger p-0 m-1 col-12 text-white"
-        :hidden="elements.length == 1"
-        @click="deleteElement(id)"
+      <!-- Buttons that can be draged and droped to reorder them -->
+      <Container
+        @drop="onDropButton"
+        drag-handle-selector=".column-drag-handle"
+        :hidden="buttons.length === 0"
+        orientation="vertical"
       >
-        Delete Element Number: {{ index }}
+        <button-vue
+          v-for="button in buttons"
+          :id="button.id"
+          :mid="mid"
+          :eid="id"
+        ></button-vue>
+      </Container>
+      <!-- Buttons that can be draged and droped to reorder them -->
+
+      <!-- Button adder  -->
+      <div
+        class="btn border m-0 p-0 bg-primary text-white"
+        @click="addButton"
+        :hidden="buttons.length > 2"
+      >
+        <div
+          class="d-flex align-items-center justify-content-center btn border bg-primary text-white"
+        >
+          <AddIcon />
+          <div>Add Button</div>
+        </div>
       </div>
+      <!-- Button adder  -->
+
+      <!-- Delete element with his Index number -->
+      <div class="d-flex justify-content-center">
+        <div
+          class="btn btn-danger p-0 m-1 col-12 text-white"
+          :hidden="elements.length == 1"
+          @click="deleteElement(id)"
+        >
+          Delete Element Number: {{ index }}
+        </div>
+      </div>
+      <!-- Delete element with his number -->
     </div>
-    <!-- Delete element with his number -->
   </div>
 </template>
 

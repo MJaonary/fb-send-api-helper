@@ -74,7 +74,7 @@ export default {
 </script>
 
 <template>
-  <Draggable class="d-flex align-items-center border rounded col-12 my-1">
+  <Draggable class="d-flex align-items-center justify-content-space-around border rounded col-12 my-1">
     <!-- The only area in witch we can drag the element -->
     <span
       class="column-drag-handle p-1"
@@ -165,7 +165,7 @@ export default {
 
     <!-- The button that helps deleting the Quick Reply -->
     <div
-      class="d-flex align-items-center justify-content-center text-danger p-1"
+      class="d-flex justify-content-center align-items-center text-danger"
       @click="deleteQuickReply"
     >
       <DeleteIcon />
