@@ -68,17 +68,10 @@ export default {
       };
       this.quick_replies.push(quick_reply);
     },
-    next: function () {
-      this.activated++;
-      if (this.activated > this.elements.length - 1) {
-        this.activated = 0;
-      }
-    },
-    prev: function () {
-      this.activated--;
-      if (this.activated < 0) {
-        this.activated = this.elements.length - 1;
-      }
+    onDropQuickReply(dropResult) {
+      this.content.json.find(
+        (item) => item.id == this.id
+      ).data.message.quick_replies = applyDrag(this.quick_replies, dropResult);
     },
     onDeleteElement(index) {
       if (index == 0) {
@@ -93,19 +86,28 @@ export default {
         ? "square"
         : "horizontal";
     },
-    onDropQuickReply(dropResult) {
-      this.content.json.find(
-        (item) => item.id == this.id
-      ).data.message.quick_replies = applyDrag(this.quick_replies, dropResult);
+    // TODO : Use Carousel to remove these navigations
+    next: function () {
+      this.activated++;
+      if (this.activated > this.elements.length - 1) {
+        this.activated = 0;
+      }
     },
+    prev: function () {
+      this.activated--;
+      if (this.activated < 0) {
+        this.activated = this.elements.length - 1;
+      }
+    },
+    // TODO : Use Carousel to remove these navigations
   },
 };
 </script>
 
 <template>
   <div class="carousel slide" data-bs-interval="false" style="width: 100%">
+    <!-- Template loop here // TODO : Use Carousel -->
     <div class="carousel-inner" style="width: 100%">
-      
       <template-vue
         v-for="(element, index) in elements"
         :id="element.id"
@@ -135,7 +137,9 @@ export default {
         <span class="visually-hidden">Next</span>
       </a>
     </div>
+    <!-- Template loop here // TODO : Use Carousel -->
 
+    <!-- Element adder  -->
     <div
       class="btn border mt-1 p-0 bg-primary text-white col-12"
       @click="addElement"
@@ -148,11 +152,14 @@ export default {
         <div>Add Element</div>
       </div>
     </div>
+    <!-- Element adder  -->
 
+    <!-- Quick Replies that can be draged and droped to reorder them -->
     <Container
       @drop="onDropQuickReply"
       drag-handle-selector=".column-drag-handle"
       :hidden="quick_replies.length === 0"
+      orientation="vertical"
     >
       <quick-reply-vue
         v-for="quick_reply in quick_replies"
@@ -160,7 +167,9 @@ export default {
         :mid="id"
       ></quick-reply-vue>
     </Container>
+    <!-- Quick Replies that can be draged and droped to reorder them -->
 
+    <!-- Quick Replies adder -->
     <div
       class="btn border m-0 p-0 bg-primary text-white container-fluid"
       @click="addQuickReply"
@@ -173,8 +182,10 @@ export default {
         <div>Quick Reply</div>
       </div>
     </div>
+    <!-- Quick Replies adder -->
   </div>
 
+  <!-- Image Aspect ratio switcher -->
   <div class="form-check">
     <input
       class="form-check-input"
@@ -188,6 +199,7 @@ export default {
       Image Aspect Ratio Squared
     </label>
   </div>
+  <!-- Image Aspect ratio switcher -->
 </template>
 
 <style scoped>
