@@ -12,6 +12,7 @@
     "lodash": "^4.17.21",
     "svelte-jsoneditor": "^0.3.58",
     "vue": "^3.2.33",
+    "vue3-smooth-dnd": "^0.0.2",
     "vuex": "^4.0.2"
   },
   "devDependencies": {

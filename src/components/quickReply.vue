@@ -5,7 +5,14 @@ import _ from "lodash";
 // Import all SVGS
 import DeleteIcon from "../assets/svg/DeleteIcon.svg";
 
+// Drag and Drop Functionality
+import { Draggable } from "vue3-smooth-dnd";
+
 export default {
+  components: {
+    Draggable,
+    DeleteIcon,
+  },
   props: ["id", "mid"],
   data() {
     return {
@@ -13,7 +20,6 @@ export default {
       selectedMode: "text",
     };
   },
-  components: { DeleteIcon },
   computed: {
     ...mapGetters({
       content: "getContent",
@@ -65,91 +71,94 @@ export default {
 </script>
 
 <template>
-  <div
-    class="d-flex flex-column m-1 p-0 align-items-center border rounded col-12 quick-reply-button"
-  >
-    <div class="d-flex col-12">
-      <div class="btn border m-0 col-10" @click="toogleButtonForm">
+  <Draggable class="d-flex align-items-center border rounded col-12 my-1">
+    <span
+      class="column-drag-handle p-1"
+      style="float: left; padding: 0 10px; width: 5%"
+      >&#x2630;</span
+    >
+    <div class="d-flex flex-column col-12" style="width: 90%">
+      <div class="btn border" @click="toogleButtonForm">
         {{ quick_reply.title }}
       </div>
-      <div
-        class="d-flex align-items-center justify-content-center btn border col-2 text-white bg-danger fa-lg"
-        @click="deleteQuickReply"
+      <form
+        class="border mb-1 col-12 rounded"
+        :hidden="formEdit"
+        @input="onFormChange"
       >
-        <DeleteIcon />
-      </div>
+        <div class="col-auto m-1">
+          <label class="mr-2" :for="id + 'quick-reply-form-content-type'"
+            >Content_type :</label
+          >
+          <select
+            class="form-select mr-2"
+            :id="id + 'quick-reply-form-content-type'"
+            v-model="selectedMode"
+          >
+            <option value="text" selected>Text</option>
+          </select>
+        </div>
+        <div class="d-flex form-group m-1">
+          <label
+            :for="id + 'quick-reply-form-postback-title'"
+            class="col-3 col-form-label"
+            >Title :</label
+          >
+          <div class="col-9">
+            <input
+              type="text"
+              class="form-control"
+              :id="id + 'quick-reply-form-postback-title'"
+              :value="quick_reply.title"
+            />
+          </div>
+        </div>
+        <div class="d-flex form-group m-1">
+          <label
+            :for="id + 'quick-reply-form-postback-payload'"
+            class="col-3 col-form-label"
+            >Payload :
+          </label>
+          <div class="col-9">
+            <input
+              type="text"
+              class="form-control"
+              :id="id + 'quick-reply-form-postback-payload'"
+              :value="quick_reply.payload"
+            />
+          </div>
+        </div>
+        <div class="d-flex form-group m-1">
+          <label
+            :for="id + 'quick-reply-form-postback-image-url'"
+            class="col-3 col-form-label"
+            >Image-url :
+          </label>
+          <div class="col-9">
+            <input
+              type="text"
+              class="form-control"
+              :id="id + 'quick-reply-form-postback-image-url'"
+              :value="quick_reply.image_url"
+            />
+          </div>
+        </div>
+        <div
+          class="btn text-white bg-secondary p-0 col-12"
+          @click="formEdit = true"
+        >
+          Hide options
+        </div>
+      </form>
     </div>
-  </div>
 
-  <form
-    class="border my-1 py-1 rounded col-12"
-    :hidden="formEdit"
-    @input="onFormChange"
-  >
-    <div class="col-auto m-1">
-      <label class="mr-2" :for="id + 'quick-reply-form-content-type'"
-        >Content_type :</label
-      >
-      <select
-        class="form-select mr-2"
-        :id="id + 'quick-reply-form-content-type'"
-        v-model="selectedMode"
-      >
-        <option value="text" selected>Text</option>
-      </select>
-    </div>
-    <div class="d-flex form-group m-1">
-      <label
-        :for="id + 'quick-reply-form-postback-title'"
-        class="col-3 col-form-label"
-        >Title :</label
-      >
-      <div class="col-9">
-        <input
-          type="text"
-          class="form-control"
-          :id="id + 'quick-reply-form-postback-title'"
-          :value="quick_reply.title"
-        />
-      </div>
-    </div>
-    <div class="d-flex form-group m-1">
-      <label
-        :for="id + 'quick-reply-form-postback-payload'"
-        class="col-3 col-form-label"
-        >Payload :
-      </label>
-      <div class="col-9">
-        <input
-          type="text"
-          class="form-control"
-          :id="id + 'quick-reply-form-postback-payload'"
-          :value="quick_reply.payload"
-        />
-      </div>
-    </div>
-    <div class="d-flex form-group m-1">
-      <label
-        :for="id + 'quick-reply-form-postback-image-url'"
-        class="col-3 col-form-label"
-        >Image-url :
-      </label>
-      <div class="col-9">
-        <input
-          type="text"
-          class="form-control"
-          :id="id + 'quick-reply-form-postback-image-url'"
-          :value="quick_reply.image_url"
-        />
-      </div>
-    </div>
     <div
-      class="btn text-white bg-secondary p-0 col-12"
-      @click="formEdit = true"
+      class="d-flex align-items-center justify-content-center text-danger"
+      @click="deleteQuickReply"
     >
-      Hide options
+      <DeleteIcon />
     </div>
-  </form>
+  </Draggable>
 </template>
 
 <style scoped></style>

@@ -12,11 +12,16 @@ import { generateUiid } from "./utils/generateuuids";
 // Import all SVGS
 import AddIcon from "../assets/svg/AddIcon.svg";
 
+// Drag and Drop Functionality
+import { Container } from "vue3-smooth-dnd";
+import { applyDrag } from "../components/utils/helpers";
+
 export default {
   components: {
     buttonVue,
     quickReplyVue,
     AddIcon,
+    Container,
   },
   props: ["id"],
   computed: {
@@ -36,7 +41,7 @@ export default {
   methods: {
     updateMessage: function (e) {
       this.message.data.message.text =
-        this.message.data.message.attachment.payload.text = e.target.innerHTML;
+        this.message.data.message.attachment.payload.text = e.target.innerText;
     },
     addButton: function () {
       let button = {
@@ -49,7 +54,7 @@ export default {
         messenger_extensions: "true",
         fallback_url: "",
       };
-      this.buttons.push(button); // TODO : Try to dispatch it
+      this.buttons.push(button);
     },
     addQuickReply: function () {
       let quick_reply = {
@@ -59,7 +64,15 @@ export default {
         payload: "Default_Payload",
         image_url: "",
       };
-      this.quick_replies.push(quick_reply); // TODO : Try to dispatch it
+      this.quick_replies.push(quick_reply);
+    },
+    onDrop(dropResult) {
+      this.content.json.find(
+        (item) => item.id == this.id
+      ).data.message.attachment.payload.buttons = applyDrag(
+        this.buttons,
+        dropResult
+      );
     },
   },
 };
@@ -76,8 +89,21 @@ export default {
     >
       {{ message.data?.message?.text }}
     </div>
-    <button-vue v-for="button in buttons" :id="button.id" :mid="id">
-    </button-vue>
+
+    <Container
+      @drop="onDrop"
+      drag-handle-selector=".column-drag-handle"
+      :hidden="buttons.length === 0"
+    >
+      <button-vue
+        v-for="button in buttons"
+        :id="button.id"
+        :mid="id"
+        :key="button.id"
+      >
+      </button-vue>
+    </Container>
+
     <div
       class="btn border m-0 p-0 bg-primary text-white"
       @click="addButton"
@@ -91,15 +117,19 @@ export default {
       </div>
     </div>
   </div>
-  <div class="container-fluid">
-    <div class="d-flex flex-column align-items-center">
-      <quick-reply-vue
-        v-for="quick_reply in quick_replies"
-        :id="quick_reply.id"
-        :mid="id"
-      ></quick-reply-vue>
-    </div>
-  </div>
+
+  <Container
+    @drop="onDrop"
+    drag-handle-selector=".column-drag-handle"
+    :hidden="quick_replies.length === 0"
+  >
+    <quick-reply-vue
+      v-for="quick_reply in quick_replies"
+      :id="quick_reply.id"
+      :mid="id"
+    ></quick-reply-vue>
+  </Container>
+
   <div
     class="btn border m-0 p-0 bg-primary text-white container-fluid"
     @click="addQuickReply"
@@ -114,7 +144,7 @@ export default {
   </div>
 </template>
 
-<style>
+<style scoped>
 /**All Bubble styles will be combined here */
 .bubble {
   white-space: pre-wrap;
@@ -139,40 +169,5 @@ export default {
 .btn:active {
   background-color: #004cd0c5 !important;
   color: white !important;
-}
-
-.quick-reply-container:focus {
-  outline: none;
-}
-
-.quick-replies {
-  text-align: center;
-  padding-bottom: 10px;
-  white-space: nowrap;
-  line-height: 2em;
-  overflow-x: auto;
-}
-
-.quick-replies .button {
-  background: #fdfdfd;
-  color: #0084ff;
-  padding: 5px 10px;
-  cursor: pointer;
-  display: inline;
-  border: 1px solid #afafaf;
-  border-radius: 1em;
-  margin: 5px;
-}
-
-.quick-reply-button,
-.quick-reply-input {
-  background: #fff;
-  border-radius: 1em;
-  color: #0084ff;
-  display: inline-block;
-  border: 1px solid #0084ff;
-  margin: 5px;
-  padding: 5px 10px;
-  cursor: pointer;
 }
 </style>

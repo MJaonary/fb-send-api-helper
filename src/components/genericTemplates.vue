@@ -94,7 +94,7 @@ export default {
 
 <template>
   <div class="carousel slide" data-bs-interval="false" style="width: 100%">
-    <div class="carousel-inner">
+    <div class="carousel-inner d-flex align-items-center justify-content-center" style="border: 1px red solid; width: 100%">
       <template-vue
         v-for="(element, index) in elements"
         :id="element.id"
@@ -183,7 +183,6 @@ export default {
   background-color: rgba(12, 105, 235, 0.827);
   width: 5rem;
   height: 5rem;
-  border-radius: 50%;
 }
 
 .carousel-control-prev-icon:active,

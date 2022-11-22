@@ -94,8 +94,8 @@ export default {
 </script>
 
 <template>
-  <div class="carousel-item border border-primary px-1 rounded" :class="class">
-    <div class="d-flex flex-column border rounded" @input="elementInput">
+  <div class="carousel-item px-1" :class="class" style="max-width: 70%; border-radius: 20">
+    <div class="d-flex flex-column" @input="elementInput">
       <div class="border" style="position: relative">
         <img
           :src="
@@ -115,7 +115,7 @@ export default {
               left: 0;
               background-color: red;
               color: white;
-              border-radius: 50%;
+              border-radius: 20%;
               width: 1em;
               display: flex;
               justify-content: center;
@@ -161,7 +161,7 @@ export default {
         <div
           class="d-flex align-items-center justify-content-center btn border bg-primary text-white"
         >
-        <AddIcon />
+          <AddIcon />
           <div>Add Default action</div>
         </div>
       </div>
@@ -180,7 +180,7 @@ export default {
         <div
           class="d-flex align-items-center justify-content-center btn border bg-primary text-white"
         >
-        <AddIcon />
+          <AddIcon />
           <div>Add Button</div>
         </div>
       </div>
@@ -205,28 +205,10 @@ export default {
   right: 0;
   top: 15%;
   border: 1px solid black;
-  border-radius: 50%;
+  border-radius: 20%;
   width: 10%;
   display: flex;
   justify-content: center;
-}
-
-.carousel-control-next,
-.carousel-control-prev {
-  z-index: -1 !important;
-  height: 10rem !important;
-}
-
-.carousel-control-prev-icon:hover,
-.carousel-control-next-icon:hover {
-  background-color: rgba(13, 100, 222, 0.699);
-  height: 10rem;
-}
-
-.carousel-control-prev-icon:active,
-.carousel-control-next-icon:active {
-  background-color: rgb(13, 100, 222);
-  height: 10rem;
 }
 
 /* Centered text */

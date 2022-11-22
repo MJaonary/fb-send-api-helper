@@ -13,13 +13,18 @@ import personalizedElementsVue from "./components/personalizedElements.vue";
 import MenuIcon from "./assets/svg/MenuIcon.svg";
 import Attachment from "./assets/svg/Attachment.svg";
 import Exported from "./assets/svg/Exported.svg";
+import DeleteIcon from "./assets/svg/DeleteIcon.svg";
 
 // Importing all Mixins
 import exporterFunctionsVue from "./exporterFunctions.vue";
 import elementsAdderVue from "./elementsAdder.vue";
 
 // Importing stored values from vuex
-import { mapGetters } from "vuex";
+import { mapGetters, Store } from "vuex";
+
+// Drag and Drop Functionality
+import { Container, Draggable } from "vue3-smooth-dnd";
+import { applyDrag } from "./components/utils/helpers";
 
 export default {
   data() {
@@ -41,10 +46,14 @@ export default {
     // Menu Components
     jsonEditorSimpleVue,
     attachementUploaderVue,
+    // Drag and Drop Functionalities
+    Container,
+    Draggable,
     // SVG Imported as Components
     MenuIcon,
     Attachment,
     Exported,
+    DeleteIcon,
   },
   mixins: [exporterFunctionsVue, elementsAdderVue],
   computed: {
@@ -56,6 +65,10 @@ export default {
     // This function will clear everything content
     clearAll: function () {
       this.content.json = [];
+    },
+    onDrop(dropResult) {
+      let content = applyDrag(this.content.json, dropResult);
+      this.$store.commit("updateContent", { json: content });
     },
   },
 };
@@ -94,8 +107,10 @@ export default {
       style="width: 100%"
     >
       <div class="d-flex flex-column p-1 border col-2">
-        <div class="p-2 border text-center font-weight-bold">Facebook Responses</div>
-        <div class="mb-1  d-flex flex-column align-items-center">
+        <div class="p-2 border text-center font-weight-bold">
+          Facebook Responses
+        </div>
+        <div class="mb-1 d-flex flex-column align-items-center">
           <div
             class="btn btn-outline-primary m-1 col-11"
             v-for="item in [
@@ -144,24 +159,47 @@ export default {
         </div>
       </div>
 
-      <div class="d-flex flex-column p-1 border overflow-hidden col-4">
-        <div class="p-2 mb-1 fb-opt-header border text-center mb-1">Parameters Options</div>
-        <div class="display d-flex flex-column h-100 align-items-center">
-          <!-- Looping Rendering here -- Begin -->
-          <div v-for="items in content.json" class="col-12">
-            <div class="d-flex flex-column justify-content-center">
-              <component :is="items.name" :id="items.id"></component>
-              <div
-                class="btn border border-danger text-danger p-0 m-1"
-                @click="deleteComponentId(items.id)"
-              >
-                Delete Template
-              </div>
-            </div>
-            <div class="separator"></div>
-          </div>
-          <!-- Looping Rendering here -- End   -->
+      <div class="d-flex flex-column p-1 border overflow-scroll col-4">
+        <div class="p-2 mb-1 fb-opt-header border text-center mb-1">
+          Parameters Options
         </div>
+        <Container
+          class="display d-flex flex-column h-100 align-items-center"
+          drag-handle-selector=".column-drag-handle"
+          @drop="onDrop"
+        >
+          <!-- Looping Rendering here -- Begin -->
+
+          <Draggable
+            v-for="items in content.json"
+            class="col-12"
+            :key="items.id"
+          >
+            <div class="d-flex border rounded my-1" style="width: 100%">
+              <span
+                class="d-flex align-items-center justify-content-center column-drag-handle my-1"
+                style="width: 5%"
+                >&#x2630;</span
+              >
+              <div
+                class="d-flex flex-column my-1 p-1 justify-content-center"
+                style="width: 90%"
+              >
+                <component :is="items.name" :id="items.id"></component>
+              </div>
+              <span
+                class="d-flex align-items-center justify-content-center my-1 text-danger"
+                @click="deleteComponentId(items.id)"
+                style="width: 5%"
+              >
+                <DeleteIcon />
+              </span>
+            </div>
+
+            <div class="separator"></div>
+          </Draggable>
+          <!-- Looping Rendering here -- End   -->
+        </Container>
       </div>
 
       <!-- We just have to listen to $store.state.content here -->
