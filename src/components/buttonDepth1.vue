@@ -48,13 +48,9 @@ export default {
         return e.id == this.id;
       });
       if (this.simpleButton) {
-        this.content.json.find(
-          (item) => item.id == this.mid
-        ).data.message.attachment.payload.buttons = buttons;
+        this.message.data.message.attachment.payload.buttons = buttons;
       } else {
-        this.content.json.find(
-          (item) => item.id == this.mid
-        ).data.message.attachment.payload.elements[0].buttons = buttons;
+        this.message.data.message.attachment.payload.elements[0].buttons = buttons;
       }
     },
     onFormChange: function (e) {
