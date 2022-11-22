@@ -13,12 +13,17 @@ import { generateUiid } from "./utils/generateuuids";
 // Import all SVGS
 import AddIcon from "../assets/svg/AddIcon.svg";
 
+// Drag and Drop Functionality
+import { Container } from "vue3-smooth-dnd";
+import { applyDrag } from "../components/utils/helpers";
+
 export default {
   components: {
     buttonVue,
     quickReplyVue,
     defaultActionVue,
     AddIcon,
+    Container,
   },
   props: ["id", "mid", "index", "class"],
   emits: ["onDeleteElement"],
@@ -89,12 +94,23 @@ export default {
       };
       this.element.default_action = default_action;
     },
+    onDropButton(dropResult) {
+      this.content.json
+        .find((item) => item.id == this.mid)
+        .data.message.attachment.payload.elements.find(
+          (item) => item.id == this.id
+        ).buttons = applyDrag(this.buttons, dropResult);
+    },
   },
 };
 </script>
 
 <template>
-  <div class="carousel-item px-1" :class="class" style="max-width: 70%; border-radius: 20">
+  <div
+    class="carousel-item px-1"
+    :class="class"
+    style="max-width: 100%; border-radius: 20"
+  >
     <div class="d-flex flex-column" @input="elementInput">
       <div class="border" style="position: relative">
         <img
@@ -166,12 +182,18 @@ export default {
         </div>
       </div>
 
-      <button-vue
-        v-for="button in buttons"
-        :id="button.id"
-        :mid="mid"
-        :eid="id"
-      ></button-vue>
+      <Container
+        @drop="onDropButton"
+        drag-handle-selector=".column-drag-handle"
+        :hidden="buttons.length === 0"
+      >
+        <button-vue
+          v-for="button in buttons"
+          :id="button.id"
+          :mid="mid"
+          :eid="id"
+        ></button-vue>
+      </Container>
       <div
         class="btn border m-0 p-0 bg-primary text-white"
         @click="addButton"

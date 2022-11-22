@@ -10,11 +10,16 @@ import { generateUiid } from "./utils/generateuuids";
 // Import all SVGS
 import AddIcon from "../assets/svg/AddIcon.svg";
 
+// Drag and Drop Functionality
+import { Container } from "vue3-smooth-dnd";
+import { applyDrag } from "../components/utils/helpers";
+
 export default {
   components: {
     quickReplyVue,
     templateVue,
     AddIcon,
+    Container,
   },
   props: ["id"],
   data() {
@@ -88,13 +93,18 @@ export default {
         ? "square"
         : "horizontal";
     },
+    onDropQuickReply(dropResult) {
+      this.content.json.find(
+        (item) => item.id == this.id
+      ).data.message.quick_replies = applyDrag(this.quick_replies, dropResult);
+    },
   },
 };
 </script>
 
 <template>
   <div class="carousel slide" data-bs-interval="false" style="width: 100%">
-    <div class="carousel-inner d-flex align-items-center justify-content-center" style="border: 1px red solid; width: 100%">
+    <div class="carousel-inner" style="width: 100%">
       <template-vue
         v-for="(element, index) in elements"
         :id="element.id"
@@ -138,25 +148,28 @@ export default {
       </div>
     </div>
 
-    <div class="quick-reply-container d-flex flex-column">
-      <div class="d-flex flex-column align-items-center">
-        <quick-reply-vue
-          v-for="quick_reply in quick_replies"
-          :id="quick_reply.id"
-          :mid="id"
-        ></quick-reply-vue>
-      </div>
+    <Container
+      @drop="onDropQuickReply"
+      drag-handle-selector=".column-drag-handle"
+      :hidden="quick_replies.length === 0"
+    >
+      <quick-reply-vue
+        v-for="quick_reply in quick_replies"
+        :id="quick_reply.id"
+        :mid="id"
+      ></quick-reply-vue>
+    </Container>
+
+    <div
+      class="btn border m-0 p-0 bg-primary text-white container-fluid"
+      @click="addQuickReply"
+      :hidden="quick_replies.length > 12"
+    >
       <div
-        class="btn border m-0 p-0 bg-primary text-white container-fluid"
-        @click="addQuickReply"
-        :hidden="quick_replies.length > 12"
+        class="d-flex align-items-center justify-content-center btn border bg-primary text-white"
       >
-        <div
-          class="d-flex align-items-center justify-content-center btn border bg-primary text-white"
-        >
-          <AddIcon />
-          <div>Quick Reply</div>
-        </div>
+        <AddIcon />
+        <div>Quick Reply</div>
       </div>
     </div>
   </div>
@@ -174,7 +187,6 @@ export default {
       Image Aspect Ratio Squared
     </label>
   </div>
-  
 </template>
 
 <style scoped>
