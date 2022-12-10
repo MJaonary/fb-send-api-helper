@@ -8,6 +8,10 @@ This tool can help testing how the generated JSON will be displayed on Facebook 
 
 The JSON editor used here is from [svelte-jsoneditor](https://github.com/josdejong/svelte-jsoneditor), manualy connected to the app using simple Javascript. And the `Drag and Drop` functionalities uses [vue3-smooth-dnd](https://github.com/gilnd/vue3-smooth-dnd), a Vue3 wrapper of the package with the same name [vue-smooth-dnd](https://github.com/kutlugsahin/vue-smooth-dnd).
 
+## Demo
+A functional demo of the App can be found on : 
+https://www.baiboly.site/apps/messenger-json
+
 ## Main Interface
 
 ![](./public/main_menu.png)
