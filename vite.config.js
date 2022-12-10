@@ -8,7 +8,7 @@ import vue from "@vitejs/plugin-vue";
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  server: { https: true },
+  server: { https: false },
   plugins: [vue(), svgLoader()],
   resolve: {
     alias: {

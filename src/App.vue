@@ -62,7 +62,7 @@ export default {
     }),
   },
   methods: {
-    // This function will clear everything content
+    // This function will clear every content
     clearAll: function () {
       this.content.json = [];
     },
@@ -236,5 +236,14 @@ export default {
 <style>
 .column-drag-handle:hover {
   cursor: grab;
+}
+body {
+  height: 100vh;
+  margin: 0;
+  padding: 0;
+}
+#app {
+  height: 100%;
+  width: 100%;
 }
 </style>
